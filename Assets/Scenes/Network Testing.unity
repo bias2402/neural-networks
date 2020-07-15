@@ -329,8 +329,14 @@ MonoBehaviour:
   - 1
   - 2
   - 3
-  outputs: []
-  numberOfHiddenLayers: 1
+  outputs:
+  - 0
+  - 0
+  desiredOutputs:
+  - 0
+  - 1
+  - 0
+  numberOfHiddenLayers: 2
   inputLayerActivationFunction: 1
   hiddenLayerActivationFunction: 1
   outputLayerActivationFunction: 1
