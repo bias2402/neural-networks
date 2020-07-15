@@ -6,7 +6,6 @@ public enum ActivationFunctions { ReLU, Sigmoid, TanH }
 public class FeedForwardArtificialNeuralNetwork : MonoBehaviour {
 
     [SerializeField] private List<double> inputs = new List<double>();
-    [SerializeField] private int numberOfOutputs = 2;
     [SerializeField] private List<double> outputs = new List<double>();
     [SerializeField] private List<double> desiredOutputs = new List<double>();
     private List<Layer> layers = new List<Layer>();
@@ -29,7 +28,6 @@ public class FeedForwardArtificialNeuralNetwork : MonoBehaviour {
         Backpropagation();
         Debug.ClearDeveloperConsole();
         for (int i = 0; i < outputs.Count; i++) {
-            Debug.Log(outputs.Count);
             Debug.Log("Output " + i + ": " + outputs[i]);
         }
     }
@@ -49,7 +47,7 @@ public class FeedForwardArtificialNeuralNetwork : MonoBehaviour {
         for (int i = 0; i < layers[layers.Count - 1].neurons.Count; i++) {
             prevOutputs.Add(layers[layers.Count - 1].neurons[i].output);
         }
-        layers.Add(new Layer(numberOfOutputs, prevOutputs));
+        layers.Add(new Layer(desiredOutputs.Count, prevOutputs));
 
         layers[0].SetActivationFunctionForLayersNeurons(inputLayerActivationFunction);
         for (int i = 1; i < layers.Count - 1; i++) {
@@ -58,6 +56,7 @@ public class FeedForwardArtificialNeuralNetwork : MonoBehaviour {
         layers[layers.Count - 1].SetActivationFunctionForLayersNeurons(outputLayerActivationFunction);
     }
     void CalculateOutput() {
+        outputs.Clear();
         for (int i = 0; i < layers.Count; i++) {
             for (int j = 0; j < layers[i].neurons.Count; j++) {
                 layers[i].neurons[j].CalculateOutput();
