@@ -5,6 +5,7 @@ using UnityEngine;
 public enum ActivationFunctions { ReLU, Sigmoid, TanH }
 public class FeedForwardArtificialNeuralNetwork : MonoBehaviour {
 
+    [SerializeField] int epochs = 1;
     [SerializeField] private List<double> inputs = new List<double>();
     [SerializeField] private List<double> outputs = new List<double>();
     [SerializeField] private List<double> desiredOutputs = new List<double>();
@@ -20,16 +21,18 @@ public class FeedForwardArtificialNeuralNetwork : MonoBehaviour {
     }
     void Update() {
         if (Input.GetKeyDown(KeyCode.Space)) {
-            Run();
+            for (int i = 0; i < epochs; i++) {
+                Run();
+            }
+            Debug.ClearDeveloperConsole();
+            for (int i = 0; i < outputs.Count; i++) {
+                Debug.Log("Output " + i + ": " + outputs[i]);
+            }
         }
     }
     void Run() {
         CalculateOutput();
         Backpropagation();
-        Debug.ClearDeveloperConsole();
-        for (int i = 0; i < outputs.Count; i++) {
-            Debug.Log("Output " + i + ": " + outputs[i]);
-        }
     }
     void InitializeANN() {
         layers.Add(new Layer(inputs.Count, inputs));
