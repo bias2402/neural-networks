@@ -18,6 +18,20 @@ public class TextReader : MonoBehaviour {
 
     [SerializeField] private FeedForwardArtificialNeuralNetwork FFANN = null;
 
+    void OnValidate() {
+        epochs = epochs <= 0 ? 1 : epochs;
+        alpha = alpha <= 0 ? 0.05 : alpha;
+        numberOfHiddenLayers = numberOfHiddenLayers < 0 ? 0 : numberOfHiddenLayers;
+        numberOfHiddenNeurons = numberOfHiddenNeurons < 2 ? 2 : numberOfHiddenNeurons;
+        if (inputs.Count <= 0) {
+            Debug.LogError("The network need inputs, preferbly at least 2!");
+        } else if (inputs.Count < 2) {
+            Debug.LogWarning("Having less than two inputs is ineffective for the network.");
+        }
+        if (desiredOutputs.Count <= 0) {
+            Debug.LogError("Desired outputs are necessary for training the network!");
+        }
+    }
     void Start() {
         FFANN = new FeedForwardArtificialNeuralNetwork(epochs, alpha, numberOfHiddenLayers, numberOfHiddenNeurons, inputs, desiredOutputs, inputLayerActivationFunction, hiddenLayerActivationFunction, outputLayerActivationFunction); ;
     }
