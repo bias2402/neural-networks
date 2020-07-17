@@ -322,21 +322,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1405823757}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a545b8446f6338c4a97c60e586cd0959, type: 3}
+  m_Script: {fileID: 11500000, guid: 39921f604527e8d48b5f9950f49ed058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputs:
-  - 1
-  - 2
-  - 3
-  outputs:
-  - 0
-  - 0
-  desiredOutputs:
-  - 0
-  - 1
-  - 0
+  epochs: 1000
+  alpha: 0.05
   numberOfHiddenLayers: 2
+  inputs:
+  - 2
+  - 4
+  - 3
+  - 1
+  - 5
+  desiredOutputs:
+  - 0.2
+  - 1
+  - 0.3
   inputLayerActivationFunction: 1
   hiddenLayerActivationFunction: 1
   outputLayerActivationFunction: 1

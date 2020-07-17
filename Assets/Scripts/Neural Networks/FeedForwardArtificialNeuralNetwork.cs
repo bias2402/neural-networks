@@ -3,38 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum ActivationFunctions { ReLU, Sigmoid, TanH }
-public class FeedForwardArtificialNeuralNetwork : MonoBehaviour {
-
-    [SerializeField] int epochs = 1;
-    [SerializeField] private List<double> inputs = new List<double>();
-    [SerializeField] private List<double> outputs = new List<double>();
-    [SerializeField] private List<double> desiredOutputs = new List<double>();
-    private List<Layer> layers = new List<Layer>();
-    [SerializeField] private int numberOfHiddenLayers = 0;
+public class FeedForwardArtificialNeuralNetwork {
+    private int epochs = 1;
     private double alpha = 0.05;
-    [SerializeField] private ActivationFunctions inputLayerActivationFunction = ActivationFunctions.Sigmoid;
-    [SerializeField] private ActivationFunctions hiddenLayerActivationFunction = ActivationFunctions.Sigmoid;
-    [SerializeField] private ActivationFunctions outputLayerActivationFunction = ActivationFunctions.Sigmoid;
+    private int numberOfHiddenLayers = 0;
+    private List<double> inputs = new List<double>();
+    private List<double> outputs = new List<double>();
+    private List<double> desiredOutputs = new List<double>();
+    private List<Layer> layers = new List<Layer>();
+    private ActivationFunctions inputLayerActivationFunction = ActivationFunctions.Sigmoid;
+    private ActivationFunctions hiddenLayerActivationFunction = ActivationFunctions.Sigmoid;
+    private ActivationFunctions outputLayerActivationFunction = ActivationFunctions.Sigmoid;
 
-    void Start() {
-        InitializeANN();
+    public FeedForwardArtificialNeuralNetwork(int epochs, double alpha, int numberOfHiddenLayers, List<double> inputs, 
+                List<double> desiredOutputs, ActivationFunctions input, ActivationFunctions hidden, ActivationFunctions output) {
+        this.epochs = epochs;
+        this.alpha = alpha;
+        this.numberOfHiddenLayers = numberOfHiddenLayers;
+        this.inputs = inputs;
+        this.desiredOutputs = desiredOutputs;
+        inputLayerActivationFunction = input;
+        hiddenLayerActivationFunction = hidden;
+        outputLayerActivationFunction = output;
+        InitializeFFANN();
     }
-    void Update() {
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            for (int i = 0; i < epochs; i++) {
-                Run();
-            }
-            Debug.ClearDeveloperConsole();
-            for (int i = 0; i < outputs.Count; i++) {
-                Debug.Log("Output " + i + ": " + outputs[i]);
-            }
-        }
-    }
-    void Run() {
-        CalculateOutput();
-        Backpropagation();
-    }
-    void InitializeANN() {
+    void InitializeFFANN() {
         layers.Add(new Layer(inputs.Count, inputs));
 
         List<double> prevOutputs = new List<double>();
@@ -57,6 +50,19 @@ public class FeedForwardArtificialNeuralNetwork : MonoBehaviour {
             layers[i].SetActivationFunctionForLayersNeurons(hiddenLayerActivationFunction);
         }
         layers[layers.Count - 1].SetActivationFunctionForLayersNeurons(outputLayerActivationFunction);
+    }
+    public void Train() {
+        for (int i = 0; i < epochs; i++) {
+            Run();
+        }
+        Debug.ClearDeveloperConsole();
+        for (int i = 0; i < outputs.Count; i++) {
+            Debug.Log("Output " + i + ": " + outputs[i]);
+        }
+    }
+    void Run() {
+        CalculateOutput();
+        Backpropagation();
     }
     void CalculateOutput() {
         outputs.Clear();
