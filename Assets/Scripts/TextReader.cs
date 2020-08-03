@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,11 +13,13 @@ public class TextReader : MonoBehaviour {
     [SerializeField] private List<double> inputs = new List<double>();
     [SerializeField] private List<double> desiredOutputs = new List<double>();
     [Header("Activation Functions")]
-    [SerializeField] private ActivationFunctions inputLayerActivationFunction = ActivationFunctions.Sigmoid;
     [SerializeField] private ActivationFunctions hiddenLayerActivationFunction = ActivationFunctions.Sigmoid;
     [SerializeField] private ActivationFunctions outputLayerActivationFunction = ActivationFunctions.Sigmoid;
 
     [SerializeField] private FeedForwardArtificialNeuralNetwork FFANN = null;
+
+    [SerializeField] private bool doVisualizeANN = false;
+    [SerializeField] private ANNVisualizationHandler visualizationHandler = null;
 
     void OnValidate() {
         epochs = epochs <= 0 ? 1 : epochs;
@@ -33,7 +36,14 @@ public class TextReader : MonoBehaviour {
         }
     }
     void Start() {
-        FFANN = new FeedForwardArtificialNeuralNetwork(epochs, alpha, numberOfHiddenLayers, numberOfHiddenNeurons, inputs, desiredOutputs, inputLayerActivationFunction, hiddenLayerActivationFunction, outputLayerActivationFunction); ;
+        FFANN = new FeedForwardArtificialNeuralNetwork(epochs, alpha, numberOfHiddenLayers, numberOfHiddenNeurons, inputs, desiredOutputs, hiddenLayerActivationFunction, outputLayerActivationFunction); ;
+        if (doVisualizeANN) {
+            try {
+                visualizationHandler.CreateVisualization(inputs.Count, numberOfHiddenNeurons, numberOfHiddenLayers, desiredOutputs.Count);
+            } catch (NullReferenceException e) {
+                Debug.LogError("Reference to the ANNVisualizationHandler not set!\n" + e);
+            }
+        }
     }
     void Update() {
         if (Input.GetKeyDown(KeyCode.Space)) {

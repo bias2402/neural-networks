@@ -12,26 +12,24 @@ public class FeedForwardArtificialNeuralNetwork {
     private List<double> outputs = new List<double>();
     private List<double> desiredOutputs = new List<double>();
     private List<Layer> layers = new List<Layer>();
-    private ActivationFunctions inputLayerActivationFunction = ActivationFunctions.Sigmoid;
     private ActivationFunctions hiddenLayerActivationFunction = ActivationFunctions.Sigmoid;
     private ActivationFunctions outputLayerActivationFunction = ActivationFunctions.Sigmoid;
 
     public FeedForwardArtificialNeuralNetwork(int epochs, double alpha, int numberOfHiddenLayers, int numberOfHiddenNeuronsPerHiddenLayer, List<double> inputs, 
-                List<double> desiredOutputs, ActivationFunctions input, ActivationFunctions hidden, ActivationFunctions output) {
+                List<double> desiredOutputs, ActivationFunctions hidden, ActivationFunctions output) {
         this.epochs = epochs;
         this.alpha = alpha;
         this.numberOfHiddenLayers = numberOfHiddenLayers;
         this.numberOfHiddenNeurons = numberOfHiddenNeuronsPerHiddenLayer;
         this.inputs = inputs;
         this.desiredOutputs = desiredOutputs;
-        inputLayerActivationFunction = input;
         hiddenLayerActivationFunction = hidden;
         outputLayerActivationFunction = output;
         InitializeFFANN();
     }
     void InitializeFFANN() {
         //Input layer
-        layers.Add(new Layer(inputs.Count, inputs));                                //Create the input layer
+        layers.Add(new Layer(inputs.Count, inputs, true));                                //Create the input layer
 
         //Hidden layers
         List<double> prevOutputs = new List<double>();
@@ -40,7 +38,7 @@ public class FeedForwardArtificialNeuralNetwork {
             for (int j = 0; j < layers[layers.Count - 1].neurons.Count; j++) {  
                 prevOutputs.Add(layers[layers.Count - 1].neurons[j].output);        //Get a reference to the previous layer's neurons' outputs
             }
-            layers.Add(new Layer(numberOfHiddenNeurons, prevOutputs));              //Create a new hidden layers
+            layers.Add(new Layer(numberOfHiddenNeurons, prevOutputs, false));              //Create a new hidden layers
         }
         prevOutputs.Clear();
 
@@ -48,10 +46,9 @@ public class FeedForwardArtificialNeuralNetwork {
         for (int i = 0; i < layers[layers.Count - 1].neurons.Count; i++) {
             prevOutputs.Add(layers[layers.Count - 1].neurons[i].output);            //Get a reference to the previous layer's neurons' outputs
         }
-        layers.Add(new Layer(desiredOutputs.Count, prevOutputs));                   //Create the output layer
+        layers.Add(new Layer(desiredOutputs.Count, prevOutputs, false));                   //Create the output layer
 
         //Set activation functions (AF) for layers
-        layers[0].SetActivationFunctionForLayersNeurons(inputLayerActivationFunction);                  //Set AF for input layer
         for (int i = 1; i < layers.Count - 1; i++) {
             layers[i].SetActivationFunctionForLayersNeurons(hiddenLayerActivationFunction);             //Set AF for hidden layers
         }
@@ -99,7 +96,7 @@ public class FeedForwardArtificialNeuralNetwork {
             layers[outputLayer].neurons[i].bias += alpha * -1 * layers[outputLayer].neurons[i].errorGradient;
         }
         //Hidden layer
-        for (int i = hiddenLayers; i > 0; i--) {    //Iterate the hidden layers
+        for (int i = hiddenLayers; i > 1; i--) {    //Iterate the hidden layers
             for (int j = 0; j < layers[i].neurons.Count; j++) {     //Iterate the neurons
                 //Calculate the neuron's errorGradient
                 layers[i].neurons[j].errorGradient = layers[i].neurons[j].output * (1 - layers[i].neurons[j].output);
@@ -124,9 +121,15 @@ public class FeedForwardArtificialNeuralNetwork {
 public class Layer {
     public List<Neuron> neurons { get; internal set; } = new List<Neuron>();
 
-    public Layer(int numberOfNeuronsForLayer, List<double> inputs) {
-        for (int i = 0; i < numberOfNeuronsForLayer; i++) {
-            neurons.Add(new Neuron(inputs));
+    public Layer(int numberOfNeuronsForLayer, List<double> inputs, bool isInputLayer) {
+        if (isInputLayer) {
+            for (int i = 0; i < numberOfNeuronsForLayer; i++) {
+                neurons.Add(new Neuron(inputs[i]));
+            }
+        } else {
+            for (int i = 0; i < numberOfNeuronsForLayer; i++) {
+                neurons.Add(new Neuron(inputs));
+            }
         }
     }
     public void SetActivationFunctionForLayersNeurons(ActivationFunctions activationFunction) {
@@ -142,6 +145,8 @@ public class Neuron {
     public double output { get; internal set; } = 0;
     public double errorGradient { get; internal set; } = 0;
     public double bias { get; internal set; } = 0;
+    private bool isInputNeuron = false;
+    private double inputValue = 0;
 
     private ActivationFunctions activationFunction = ActivationFunctions.Sigmoid;
 
@@ -156,10 +161,18 @@ public class Neuron {
             weights.Add(Random.Range(-1f, 1f));
         }
     }
+    public Neuron (double inputValue) {
+        isInputNeuron = true;
+        this.inputValue = inputValue;
+    }
     public void SetActivationFunction(ActivationFunctions activationFunction) {
         this.activationFunction = activationFunction;
     }
     public void CalculateOutput() {
+        if (isInputNeuron) {
+            output = inputValue;
+            return;
+        }
         double value = 0;
         for (int i = 0; i < inputs.Count; i++) {
             value += inputs[i] * weights[i];
