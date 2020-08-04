@@ -4,14 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class NeuronVisualization : MonoBehaviour {
-    [SerializeField] private Image neuronImage = null;
+    private Image neuronImage = null;
 
     void Start() {
-        if (neuronImage == null) {
-            neuronImage = GetComponent<Image>();
-        }
-    }
-    public void SetPosition() {
-
+        neuronImage = GetComponent<Image>();
     }
 }

@@ -11,7 +11,7 @@ public class FeedForwardArtificialNeuralNetwork {
     private List<double> inputs = new List<double>();
     private List<double> outputs = new List<double>();
     private List<double> desiredOutputs = new List<double>();
-    private List<Layer> layers = new List<Layer>();
+    public List<Layer> layers { get; internal set; } = new List<Layer>();
     private ActivationFunctions hiddenLayerActivationFunction = ActivationFunctions.Sigmoid;
     private ActivationFunctions outputLayerActivationFunction = ActivationFunctions.Sigmoid;
 

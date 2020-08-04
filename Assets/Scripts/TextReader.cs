@@ -39,9 +39,9 @@ public class TextReader : MonoBehaviour {
         FFANN = new FeedForwardArtificialNeuralNetwork(epochs, alpha, numberOfHiddenLayers, numberOfHiddenNeurons, inputs, desiredOutputs, hiddenLayerActivationFunction, outputLayerActivationFunction); ;
         if (doVisualizeANN) {
             try {
-                visualizationHandler.CreateVisualization(inputs.Count, numberOfHiddenNeurons, numberOfHiddenLayers, desiredOutputs.Count);
+                visualizationHandler.CreateVisualization(inputs.Count, numberOfHiddenNeurons, numberOfHiddenLayers, desiredOutputs.Count, FFANN.layers);
             } catch (NullReferenceException e) {
-                Debug.LogError("Reference to the ANNVisualizationHandler not set!\n" + e);
+                Debug.LogError(e);
             }
         }
     }

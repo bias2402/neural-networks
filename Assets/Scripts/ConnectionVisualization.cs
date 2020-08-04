@@ -4,14 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ConnectionVisualization : MonoBehaviour {
-    [SerializeField] private Image connectionImage = null;
+    private Image connectionImage = null;
 
     void Start() {
-        if (connectionImage == null) {
-            connectionImage = GetComponent<Image>();
-        }
+        connectionImage = GetComponent<Image>();
     }
-    public void SetPosition(Transform start, Transform end) {
+    public void SetPosition(Vector3 start, Vector3 end) {
+        transform.localPosition = (end + start) / 2;
+        //transform.rotation = Quaternion.Euler(0, 0, (end - start).y);
+        transform.localScale = new Vector3(0.1f, 0.1f, 0); //Vector3.Distance(start, end) / 90
 
     }
 }
