@@ -31,12 +31,12 @@ public class ANNVisualizationHandler : MonoBehaviour {
                     for (int j = 0; j < nI; j++) {
                         GameObject neuron = Instantiate(INeuron, neuronPool);
                         neuron.transform.localPosition = new Vector3(-xStart, yStart - (yOffset * j) - (maxNNeuorns - nI) * yOffset / 2, 0);
-                        visualNeurons.Add(new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition));
                         if (neuron.transform.localPosition.y < 0) {
                             neuron.transform.localPosition += new Vector3(0, -40, 0);
                         } else {
                             neuron.transform.localPosition += new Vector3(0, 40, 0);
                         }
+                        visualNeurons.Add(new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition));
                     }
                     GameObject counter = Instantiate(neuronCounter, counterPool);
                     counter.transform.localPosition = new Vector3(-xStart, 0, 0);
@@ -53,12 +53,12 @@ public class ANNVisualizationHandler : MonoBehaviour {
                     for (int j = 0; j < nO; j++) {
                         GameObject neuron = Instantiate(ONeuron, neuronPool);
                         neuron.transform.localPosition = new Vector3(xStart, yStart - (yOffset * j) - (maxNNeuorns - nO) * yOffset / 2, 0);
-                        visualNeurons.Add(new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition));
                         if (neuron.transform.localPosition.y < 0) {
                             neuron.transform.localPosition += new Vector3(0, -40, 0);
                         } else {
                             neuron.transform.localPosition += new Vector3(0, 40, 0);
                         }
+                        visualNeurons.Add(new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition));
                     }
                     GameObject counter = Instantiate(neuronCounter, counterPool);
                     counter.transform.localPosition = new Vector3(xStart, 0, 0);
@@ -83,12 +83,12 @@ public class ANNVisualizationHandler : MonoBehaviour {
                     for (int j = 0; j < nH; j++) {
                         GameObject neuron = Instantiate(HNeuron, neuronPool);
                         neuron.transform.localPosition = new Vector3(-xStart + (xOffset * (i)), yStart - (yOffset * j) - (maxNNeuorns - nH) * yOffset / 2, 0);
-                        visualNeurons.Add(new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition));
                         if (neuron.transform.localPosition.y < 0) {
                             neuron.transform.localPosition += new Vector3(0, -40, 0);
                         } else {
                             neuron.transform.localPosition += new Vector3(0, 40, 0);
                         }
+                        visualNeurons.Add(new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition));
                     }
                     GameObject counter = Instantiate(neuronCounter, counterPool);
                     counter.transform.localPosition = new Vector3(-xStart + (xOffset * (i)), 0, 0);
