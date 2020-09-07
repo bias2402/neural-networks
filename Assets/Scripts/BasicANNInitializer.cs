@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TextReader : MonoBehaviour {
+[Serializable]
+public class BasicANNInitializer
+    : MonoBehaviour {
     [Header("ANN Settings")]
     [SerializeField] int epochs = 100;
     [SerializeField] double alpha = 0.05;
@@ -35,6 +37,7 @@ public class TextReader : MonoBehaviour {
             Debug.LogError("Desired outputs are necessary for training the network!");
         }
     }
+
     void Start() {
         FFANN = new FeedForwardArtificialNeuralNetwork(epochs, alpha, numberOfHiddenLayers, numberOfHiddenNeurons, inputs, desiredOutputs, hiddenLayerActivationFunction, outputLayerActivationFunction); ;
         if (doVisualizeANN) {
@@ -45,9 +48,11 @@ public class TextReader : MonoBehaviour {
             }
         }
     }
+
     void Update() {
-        if (Input.GetKeyDown(KeyCode.Space)) {
+        if (Input.GetKeyDown(KeyCode.T)) {
             FFANN.Train();
         }
+         //TO DO: Give it an input to calculate a result
     }
 }

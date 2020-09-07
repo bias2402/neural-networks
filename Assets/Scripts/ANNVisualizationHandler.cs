@@ -7,16 +7,15 @@ public class ANNVisualizationHandler : MonoBehaviour {
     [SerializeField] private GameObject INeuron = null;
     [SerializeField] private GameObject HNeuron = null;
     [SerializeField] private GameObject ONeuron = null;
-    [SerializeField] private GameObject neuronCounter = null;
     [SerializeField] private GameObject connection = null;
+    [SerializeField] private GameObject neuronCounter = null;
     [SerializeField] private Transform neuronPool = null;
-    [SerializeField] private Transform connectionPool = null;
     [SerializeField] private Transform counterPool = null;
     private int xOffset = 180;
     private int yOffset = 80;
-    private List<VisualNeuron> visualNeurons = new List<VisualNeuron>();
 
     public void CreateVisualization(int nInputNeurons, int nHiddenNeurons, int nHiddenLayers, int nOutputNeurons, List<Layer> layers) {
+        List<VisualNeuron> visualNeurons = new List<VisualNeuron>();
         int nI = nInputNeurons > 5 ? 4 : nInputNeurons;
         int nH = nHiddenNeurons > 5 ? 4 : nHiddenNeurons;
         int nO = nOutputNeurons > 5 ? 4 : nOutputNeurons;
@@ -36,7 +35,9 @@ public class ANNVisualizationHandler : MonoBehaviour {
                         } else {
                             neuron.transform.localPosition += new Vector3(0, 40, 0);
                         }
-                        visualNeurons.Add(new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition));
+                        VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition, j);
+                        visualNeurons.Add(vs);
+                        layers[i].neurons[j].SetupNeuronVisualization(vs.neuronVisualization);
                     }
                     GameObject counter = Instantiate(neuronCounter, counterPool);
                     counter.transform.localPosition = new Vector3(-xStart, 0, 0);
@@ -45,7 +46,9 @@ public class ANNVisualizationHandler : MonoBehaviour {
                     for (int j = 0; j < nI; j++) {
                         GameObject neuron = Instantiate(INeuron, neuronPool);
                         neuron.transform.localPosition = new Vector3(-xStart, yStart - (yOffset * j) - (maxNNeuorns - nI) * yOffset / 2, 0);
-                        visualNeurons.Add(new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition));
+                        VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition, j);
+                        visualNeurons.Add(vs);
+                        layers[i].neurons[j].SetupNeuronVisualization(vs.neuronVisualization);
                     }
                 }
             } else if (i == layers.Count - 1) {                 //Output layer
@@ -58,7 +61,9 @@ public class ANNVisualizationHandler : MonoBehaviour {
                         } else {
                             neuron.transform.localPosition += new Vector3(0, 40, 0);
                         }
-                        visualNeurons.Add(new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition));
+                        VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition, j);
+                        visualNeurons.Add(vs);
+                        layers[i].neurons[j].SetupNeuronVisualization(vs.neuronVisualization);
                     }
                     GameObject counter = Instantiate(neuronCounter, counterPool);
                     counter.transform.localPosition = new Vector3(xStart, 0, 0);
@@ -67,15 +72,9 @@ public class ANNVisualizationHandler : MonoBehaviour {
                     for (int j = 0; j < nO; j++) {
                         GameObject neuron = Instantiate(ONeuron, neuronPool);
                         neuron.transform.localPosition = new Vector3(xStart, yStart - (yOffset * j) - (maxNNeuorns - nO) * yOffset / 2, 0);
-                        visualNeurons.Add(new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition));
-                    }
-                }
-                List<VisualNeuron> currentNeurons = visualNeurons.Where(n => n.layer == i).ToList();
-                List<VisualNeuron> prevNeurons = visualNeurons.Where(n => n.layer == i - 1).ToList();
-                foreach(VisualNeuron vnc in currentNeurons) {
-                    foreach (VisualNeuron vnp in prevNeurons) {
-                        ConnectionVisualization cv = Instantiate(connection, connectionPool).GetComponent<ConnectionVisualization>();
-                        cv.SetPosition(vnp.position, vnc.position);
+                        VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition, j);
+                        visualNeurons.Add(vs);
+                        layers[i].neurons[j].SetupNeuronVisualization(vs.neuronVisualization);
                     }
                 }
             } else {                                            //Hidden layers
@@ -88,7 +87,9 @@ public class ANNVisualizationHandler : MonoBehaviour {
                         } else {
                             neuron.transform.localPosition += new Vector3(0, 40, 0);
                         }
-                        visualNeurons.Add(new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition));
+                        VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition, j);
+                        visualNeurons.Add(vs);
+                        layers[i].neurons[j].SetupNeuronVisualization(vs.neuronVisualization);
                     }
                     GameObject counter = Instantiate(neuronCounter, counterPool);
                     counter.transform.localPosition = new Vector3(-xStart + (xOffset * (i)), 0, 0);
@@ -97,26 +98,40 @@ public class ANNVisualizationHandler : MonoBehaviour {
                     for (int j = 0; j < nH; j++) {
                         GameObject neuron = Instantiate(HNeuron, neuronPool);
                         neuron.transform.localPosition = new Vector3(-xStart + (xOffset * (i)), yStart - (yOffset * j) - (maxNNeuorns - nH) * yOffset / 2, 0);
-                        visualNeurons.Add(new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition));
+                        VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition, j);
+                        visualNeurons.Add(vs);
+                        layers[i].neurons[j].SetupNeuronVisualization(vs.neuronVisualization);
                     }
+                }
+            }
+        }
+
+        for (int i = 0; i < layers.Count - 1; i++) {
+            List<VisualNeuron> currentLayerNeurons = visualNeurons.Where(n => n.layer == i).ToList();
+            List<VisualNeuron> nextLayerNeurons = visualNeurons.Where(n => n.layer == i + 1).ToList();
+            foreach (VisualNeuron current in currentLayerNeurons) {
+                List<Vector3> positions = new List<Vector3>();
+                foreach (VisualNeuron next in nextLayerNeurons) {
+                    current.neuronVisualization.CreateNewConnection(connection, next.neuronIndex, current.position, next.position);
                 }
             }
         }
     }
 }
+
 public struct VisualNeuron {
     public NeuronVisualization neuronVisualization { get; internal set; }
+
     public int layer { get; internal set; }
-    public List<ConnectionVisualization> connections { get; internal set; }
+
     public Vector3 position { get; internal set; }
 
-    public VisualNeuron(NeuronVisualization neuronVisualization, int layer, Vector3 position) {
+    public int neuronIndex { get; internal set; }
+
+    public VisualNeuron(NeuronVisualization neuronVisualization, int layer, Vector3 position, int neuronIndex) {
         this.neuronVisualization = neuronVisualization;
         this.layer = layer;
-        connections = new List<ConnectionVisualization>();
         this.position = position;
-    }
-    public void AddConnection(ConnectionVisualization connection) {
-        connections.Add(connection);
+        this.neuronIndex = neuronIndex;
     }
 }

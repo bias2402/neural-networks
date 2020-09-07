@@ -2,17 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
+[Serializable]
+[RequireComponent(typeof(LineRenderer))]
 public class ConnectionVisualization : MonoBehaviour {
-    private Image connectionImage = null;
+    [SerializeField] private LineRenderer lineRenderer = null;
+    [SerializeField] private Shader lineMat = null;
+    private Vector3[] positions = new Vector3[2];
 
-    void Start() {
-        connectionImage = GetComponent<Image>();
+    public void Init(Vector3 start, Vector3 end) {
+        lineRenderer.positionCount = 2;
+        positions[0] = start;
+        positions[1] = end;
+             
+        if (lineRenderer == null) GetComponent<LineRenderer>();
+        lineRenderer.material = new Material(lineMat);
+        Draw(Color.yellow, 1);
     }
-    public void SetPosition(Vector3 start, Vector3 end) {
-        Vector3 pos = end + start;
-        transform.localPosition = pos / 2;
-        transform.rotation = Quaternion.Euler(0, 0, pos.y);
-        transform.localScale = new Vector3(Vector3.Distance(start, end) / 90, 0.1f, 0);
+
+    public void Draw(Color c, float connectionStrength) {
+        lineRenderer.startColor = c;
+        lineRenderer.endColor = c;
+        lineRenderer.startWidth = 1;
+        lineRenderer.endWidth = 1;
+        lineRenderer.SetPositions(positions);
     }
 }
