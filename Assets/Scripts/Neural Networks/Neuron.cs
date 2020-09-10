@@ -38,10 +38,6 @@ public class Neuron {
         this.inputValue = inputValue;
     }
 
-    public void SetActivationFunction(ActivationFunctions activationFunction) {
-        this.activationFunction = activationFunction;
-    }
-
     public void CalculateOutput() {
         if (isInputNeuron) {
             output = inputValue;
@@ -72,6 +68,16 @@ public class Neuron {
         this.neuronVisualization = neuronVisualization;
         if (neuronVisualization != null) isVisualizing = true;
     }
+
+    public void NeuronIsWorking() { 
+        if (neuronVisualization != null) neuronVisualization.NeuronWorking();
+    }
+
+    public void ResetVisualNeuronColor() {
+        if (neuronVisualization != null) neuronVisualization.ResetNeuronColor();
+    }
+
+    public void SetActivationFunction(ActivationFunctions activationFunction) => this.activationFunction = activationFunction;
 
     public void SetName(string name) => this.name = name;
 }

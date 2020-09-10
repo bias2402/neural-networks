@@ -35,7 +35,7 @@ public class NeuronVisualization : MonoBehaviour {
         return connectionStrength < 0.1f ? 0.1f : connectionStrength > 1 ? 1 : connectionStrength;
     }
 
-    public void NeuronWorking() {
-        neuronImage.color = Color.yellow;
-    }
+    public void ResetNeuronColor() => neuronImage.color = Color.white;
+
+    public void NeuronWorking() => neuronImage.color = Color.yellow;
 }

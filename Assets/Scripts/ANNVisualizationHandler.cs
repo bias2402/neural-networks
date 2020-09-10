@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ANNVisualizationHandler : MonoBehaviour {
     [SerializeField] private GameObject INeuron = null;
@@ -11,6 +12,7 @@ public class ANNVisualizationHandler : MonoBehaviour {
     [SerializeField] private GameObject neuronCounter = null;
     [SerializeField] private Transform neuronPool = null;
     [SerializeField] private Transform counterPool = null;
+    [SerializeField] private Text outputText = null;
     private int xOffset = 180;
     private int yOffset = 80;
 
@@ -116,6 +118,10 @@ public class ANNVisualizationHandler : MonoBehaviour {
                 }
             }
         }
+    }
+
+    public void SetOutputText(string text) {
+        outputText.text = text;
     }
 }
 
