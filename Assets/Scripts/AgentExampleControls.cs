@@ -6,17 +6,10 @@ public class AgentExampleControls : MonoBehaviour {
     [SerializeField] private bool isAIAgent = false;
     [SerializeField] private BasicANNInitializer ANNInitializer = null;
     private bool isRecievingInput = false;
-    private Dictionary<string, List<double>> inputs = new Dictionary<string, List<double>>();
     private double forward = 0;
     private double turn = 0;
     private double collision = 0;
-
-    void Start() {
-        inputs.Add("walk", new List<double>());
-        inputs.Add("turn", new List<double>());
-        inputs.Add("hit", new List<double>());
-        inputs.Add("col", new List<double>());
-    }
+    private DataContainer data = new DataContainer();
 
     RaycastHit Raycast(Vector3 direction) {
         RaycastHit hit;
@@ -52,31 +45,13 @@ public class AgentExampleControls : MonoBehaviour {
             }
 
             if (Input.GetKeyDown(KeyCode.Space)) {
-                for (int i = 0; i < inputs["walk"].Count; i++) {
-                    for (int j = i; j < inputs["walk"].Count; j++) {
-                        if (inputs["walk"][i] == inputs["walk"][j] &&
-                            inputs["turn"][i] == inputs["turn"][j] &&
-                            inputs["hit"][i] == inputs["hit"][j] &&
-                            inputs["col"][i] == inputs["col"][j]) {
-                            inputs["walk"].RemoveAt(j);
-                            inputs["turn"].RemoveAt(j);
-                            inputs["hit"].RemoveAt(j);
-                            inputs["col"].RemoveAt(j);
-                        }
-                    }
-                }
-
-                ANNInitializer.PassInputs(new List<List<double>> { inputs["walk"], inputs["turn"], inputs["hit"] });
-                ANNInitializer.PassDesiredOutputs(inputs["col"]);
+                ANNInitializer.PassData(data);
                 ANNInitializer.CreateANN();
             }
 
             if (isRecievingInput) {
                 RaycastHit hit = Raycast(Vector3.forward);
-                inputs["walk"].Add(forward);
-                inputs["turn"].Add(turn);
-                inputs["hit"].Add(hit.collider != null ? 1 : 0);
-                inputs["col"].Add(collision);
+
             }
         }
     }
@@ -88,4 +63,42 @@ public class AgentExampleControls : MonoBehaviour {
     void OnCollisionEnter(Collision collision) => this.collision = 1;
 
     void OnCollisionExit(Collision collision) => this.collision = 0;
+}
+
+public struct DataContainer {
+    public List<bool> hit0;
+    public List<bool> hit45;
+    public List<bool> hit215;
+    public List<float> dist0;
+    public List<float> dist45;
+    public List<float> dist215;
+
+    public void AddData(bool hit0, bool hit45, bool hit215, float dist0, float dist45, float dist215) {
+        this.hit0.Add(hit0);
+        this.hit45.Add(hit45);
+        this.hit215.Add(hit215);
+        this.dist0.Add(dist0);
+        this.dist45.Add(dist45);
+        this.dist215.Add(dist215);
+    }
+
+    public void CleanData() {
+        for (int i = 0; i < hit0.Count; i++) {
+            for (int j = i; j < dist0.Count; j++) {
+                if (hit0[i] == hit0[j] &&
+                    hit45[i] == hit45[j] &&
+                    hit215[i] == hit215[j] &&
+                    dist0[i] == dist0[j] &&
+                    dist45[i] == dist45[j] &&
+                    dist215[i] == dist215[j]) {
+                    hit0.RemoveAt(j);
+                    hit45.RemoveAt(j);
+                    hit215.RemoveAt(j);
+                    dist0.RemoveAt(j);
+                    dist45.RemoveAt(j);
+                    dist215.RemoveAt(j);
+                }
+            }
+        }
+    }
 }

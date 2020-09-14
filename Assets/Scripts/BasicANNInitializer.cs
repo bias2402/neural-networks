@@ -19,6 +19,7 @@ public class BasicANNInitializer
     [Header("Inputs & Desired Outputs")]
     private List<List<double>> inputs = new List<List<double>>();
     private List<double> desiredOutputs = new List<double>();
+    private DataContainer trainingData;
 
     [Header("Activation Functions")]
     [SerializeField] private ActivationFunctions hiddenLayerActivationFunction = ActivationFunctions.Sigmoid;
@@ -40,10 +41,6 @@ public class BasicANNInitializer
         delay = isDelayingExecution && delay <= 0 ? 0.5f : delay;
     }
 
-    void Start() {
-        //CreateANN();
-    }
-
     public void CreateANN() {
         FFANN = new FeedForwardArtificialNeuralNetwork(epochs, alpha, numberOfHiddenLayers, numberOfHiddenNeurons, inputs, desiredOutputs,
             hiddenLayerActivationFunction, outputLayerActivationFunction, isDelayingExecution);
@@ -58,9 +55,9 @@ public class BasicANNInitializer
         FFANN.Train();
     }
 
-    public void PassInputs(List<List<double>> inputs) => this.inputs = inputs;
-
-    public void PassDesiredOutputs(List<double> desiredOutputs) => this.desiredOutputs = desiredOutputs;
+    public void PassData(DataContainer dataContainer) {
+        trainingData = dataContainer;
+    }
 
     void Update() {
         if (Input.GetKeyDown(KeyCode.T) && !isCalculating && !isTraining) {
