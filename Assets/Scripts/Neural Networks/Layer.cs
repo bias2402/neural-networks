@@ -5,18 +5,22 @@ using System;
 
 [Serializable]
 public class Layer {
-    public List<Neuron> neurons { get; internal set; } = new List<Neuron>();
+    public List<Neuron> neurons = new List<Neuron>();
 
-    public Layer(int numberOfNeuronsForLayer, List<double> inputs) {
+    public Layer(int numberOfNeuronsForLayer, List<double> inputs) {                                        //Hidden and output layer
         for (int i = 0; i < numberOfNeuronsForLayer; i++) {
             neurons.Add(new Neuron(inputs));
         }
     }
 
-    public Layer(int numberOfNeuronsForLayer, List<List<double>> inputs) {
+    public Layer(int numberOfNeuronsForLayer) {                                                             //Input layer
         for (int i = 0; i < numberOfNeuronsForLayer; i++) {
-            neurons.Add(new Neuron(inputs[i]));
+            neurons.Add(new Neuron());
         }
+    }
+
+    public void PassDataToNeuron(int neuronIndex, double data) {
+        neurons[neuronIndex].SetInputValueForInputNeuron(data);
     }
 
     public void SetActivationFunctionForLayersNeurons(ActivationFunctions activationFunction) {

@@ -6,14 +6,15 @@ using System;
 [Serializable]
 public class Neuron {
     [Header("Neuron Settings")]
-    private bool isInputNeuron = false;
-    private double inputValue = 0;
-    public double bias { get; internal set; } = 0;
-    public List<double> weights { get; internal set; } = new List<double>();
-    public List<double> inputs { get; internal set; } = new List<double>();
-    public double output { get; internal set; } = 0;
-    public double errorGradient { get; internal set; } = 0;
-    [SerializeReference] private string name = "";
+    [SerializeField] private bool isInputNeuron = false;
+    [SerializeField] private double inputValue = 0;
+    public double bias = 0;
+    [SerializeReference] public List<double> weights = new List<double>();
+    [SerializeReference] public List<double> inputs = new List<double>();
+    public double output = 0;
+    public double desiredOutput = 0;
+    public double errorGradient = 0;
+    [SerializeField] private string name = "";
 
     [Header("Visualization")]
     private bool isVisualizing = false;
@@ -33,14 +34,20 @@ public class Neuron {
         }
     }
 
+    public Neuron() => isInputNeuron = true;
+
     public Neuron(double inputValue) {
-        isInputNeuron = true;
         this.inputValue = inputValue;
     }
+
+    public void SetInputValueForInputNeuron(double inputValue) => this.inputValue = inputValue;
+
+    public void SetDesiredOutputValueForOutputNeuron(double desiredOutputValue) => desiredOutput = desiredOutputValue;
 
     public void CalculateOutput() {
         if (isInputNeuron) {
             output = inputValue;
+            inputValue = 0;
 
             if (isVisualizing) {
                 neuronVisualization.UpdateNeuronImage((float)output);

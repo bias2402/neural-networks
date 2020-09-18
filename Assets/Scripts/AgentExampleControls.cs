@@ -45,13 +45,37 @@ public class AgentExampleControls : MonoBehaviour {
             }
 
             if (Input.GetKeyDown(KeyCode.Space)) {
-                ANNInitializer.PassData(data);
+                data.CleanData();
+
+                List<List<double>> inputs = new List<List<double>>();
+                List<List<double>> desiredOutputs = new List<List<double>>();
+                inputs.Add(new List<double>(data.hit0));
+                inputs.Add(new List<double>(data.hit45));
+                inputs.Add(new List<double>(data.hit215));
+                inputs.Add(new List<double>(data.dist0));
+                inputs.Add(new List<double>(data.dist45));
+                inputs.Add(new List<double>(data.dist215));
+                desiredOutputs.Add(new List<double>(data.wDown));
+                desiredOutputs.Add(new List<double>(data.aDown));
+                desiredOutputs.Add(new List<double>(data.dDown));
+
+                ANNInitializer.PassData(inputs, desiredOutputs);
                 ANNInitializer.CreateANN();
             }
 
             if (isRecievingInput) {
-                RaycastHit hit = Raycast(Vector3.forward);
-
+                RaycastHit hit0 = Raycast(Vector3.forward);
+                RaycastHit hit45 = Raycast(Vector3.forward + Vector3.right);
+                RaycastHit hit215 = Raycast(Vector3.forward + Vector3.left);
+                data.AddData(hit0.collider == null ? 1 : 0,
+                             hit45.collider == null ? 1 : 0,
+                             hit215.collider == null ? 1 : 0,
+                             hit0.collider == null ? Vector3.Distance(transform.position, hit0.collider.transform.position) : -1,
+                             hit45.collider == null ? Vector3.Distance(transform.position, hit45.collider.transform.position) : -1,
+                             hit215.collider == null ? Vector3.Distance(transform.position, hit215.collider.transform.position) : -1,
+                             forward > 0 ? 1 : 0,
+                             turn < 0 ? 1 : 0,
+                             turn > 0 ? 1 : 0);
             }
         }
     }
@@ -66,20 +90,26 @@ public class AgentExampleControls : MonoBehaviour {
 }
 
 public struct DataContainer {
-    public List<bool> hit0;
-    public List<bool> hit45;
-    public List<bool> hit215;
-    public List<float> dist0;
-    public List<float> dist45;
-    public List<float> dist215;
+    public List<double> hit0;
+    public List<double> hit45;
+    public List<double> hit215;
+    public List<double> dist0;
+    public List<double> dist45;
+    public List<double> dist215;
+    public List<double> wDown;
+    public List<double> aDown;
+    public List<double> dDown;
 
-    public void AddData(bool hit0, bool hit45, bool hit215, float dist0, float dist45, float dist215) {
+    public void AddData(double hit0, double hit45, double hit215, double dist0, double dist45, double dist215, double wDown, double aDown, double dDown) {
         this.hit0.Add(hit0);
         this.hit45.Add(hit45);
         this.hit215.Add(hit215);
         this.dist0.Add(dist0);
         this.dist45.Add(dist45);
         this.dist215.Add(dist215);
+        this.wDown.Add(wDown);
+        this.aDown.Add(aDown);
+        this.dDown.Add(dDown);
     }
 
     public void CleanData() {

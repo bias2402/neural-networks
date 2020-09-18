@@ -18,7 +18,7 @@ public class BasicANNInitializer
 
     [Header("Inputs & Desired Outputs")]
     private List<List<double>> inputs = new List<List<double>>();
-    private List<double> desiredOutputs = new List<double>();
+    private List<List<double>> desiredOutputs = new List<List<double>>();
     private DataContainer trainingData;
 
     [Header("Activation Functions")]
@@ -55,8 +55,9 @@ public class BasicANNInitializer
         FFANN.Train();
     }
 
-    public void PassData(DataContainer dataContainer) {
-        trainingData = dataContainer;
+    public void PassData(List<List<double>> inputs, List<List<double>> desiredOutputs) {
+        this.inputs = inputs;
+        this.desiredOutputs = desiredOutputs;
     }
 
     void Update() {

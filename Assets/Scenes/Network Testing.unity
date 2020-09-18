@@ -173,7 +173,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &380015156
 Transform:
   m_ObjectHideFlags: 0
@@ -1385,11 +1385,11 @@ MonoBehaviour:
   alpha: 0.05
   numberOfHiddenLayers: 2
   numberOfHiddenNeurons: 5
-  isDelayingExecution: 0
+  isDelayingExecution: 1
   delay: 0.5
   hiddenLayerActivationFunction: 1
   outputLayerActivationFunction: 1
-  isVisualizingANN: 0
+  isVisualizingANN: 1
   visualizationHandler: {fileID: 749837067}
 --- !u!4 &1405823759
 Transform:
