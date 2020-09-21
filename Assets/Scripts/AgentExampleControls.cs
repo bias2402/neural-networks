@@ -8,8 +8,11 @@ public class AgentExampleControls : MonoBehaviour {
     private bool isRecievingInput = false;
     private double forward = 0;
     private double turn = 0;
-    private double collision = 0;
-    private DataContainer data = new DataContainer();
+    private DataContainer data;
+
+    void Start() {
+        data = new DataContainer();
+    }
 
     RaycastHit Raycast(Vector3 direction) {
         RaycastHit hit;
@@ -67,12 +70,12 @@ public class AgentExampleControls : MonoBehaviour {
                 RaycastHit hit0 = Raycast(Vector3.forward);
                 RaycastHit hit45 = Raycast(Vector3.forward + Vector3.right);
                 RaycastHit hit215 = Raycast(Vector3.forward + Vector3.left);
-                data.AddData(hit0.collider == null ? 1 : 0,
-                             hit45.collider == null ? 1 : 0,
-                             hit215.collider == null ? 1 : 0,
-                             hit0.collider == null ? Vector3.Distance(transform.position, hit0.collider.transform.position) : -1,
-                             hit45.collider == null ? Vector3.Distance(transform.position, hit45.collider.transform.position) : -1,
-                             hit215.collider == null ? Vector3.Distance(transform.position, hit215.collider.transform.position) : -1,
+                data.AddData(hit0.collider != null ? 1 : 0,
+                             hit45.collider != null ? 1 : 0,
+                             hit215.collider != null ? 1 : 0,
+                             hit0.collider != null ? Vector3.Distance(transform.position, hit0.collider.transform.position) : -1,
+                             hit45.collider != null ? Vector3.Distance(transform.position, hit45.collider.transform.position) : -1,
+                             hit215.collider != null ? Vector3.Distance(transform.position, hit215.collider.transform.position) : -1,
                              forward > 0 ? 1 : 0,
                              turn < 0 ? 1 : 0,
                              turn > 0 ? 1 : 0);
@@ -83,22 +86,18 @@ public class AgentExampleControls : MonoBehaviour {
     void Walk() => transform.Translate(Vector3.forward * (float)forward);
 
     void Turn() => transform.Rotate(Vector3.up, (float)turn);
-
-    void OnCollisionEnter(Collision collision) => this.collision = 1;
-
-    void OnCollisionExit(Collision collision) => this.collision = 0;
 }
 
-public struct DataContainer {
-    public List<double> hit0;
-    public List<double> hit45;
-    public List<double> hit215;
-    public List<double> dist0;
-    public List<double> dist45;
-    public List<double> dist215;
-    public List<double> wDown;
-    public List<double> aDown;
-    public List<double> dDown;
+public class DataContainer {
+    public List<double> hit0 = new List<double>();
+    public List<double> hit45 = new List<double>();
+    public List<double> hit215 = new List<double>();
+    public List<double> dist0 = new List<double>();
+    public List<double> dist45 = new List<double>();
+    public List<double> dist215 = new List<double>();
+    public List<double> wDown = new List<double>();
+    public List<double> aDown = new List<double>();
+    public List<double> dDown = new List<double>();
 
     public void AddData(double hit0, double hit45, double hit215, double dist0, double dist45, double dist215, double wDown, double aDown, double dDown) {
         this.hit0.Add(hit0);

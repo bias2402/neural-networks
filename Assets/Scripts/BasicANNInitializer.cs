@@ -19,7 +19,6 @@ public class BasicANNInitializer
     [Header("Inputs & Desired Outputs")]
     private List<List<double>> inputs = new List<List<double>>();
     private List<List<double>> desiredOutputs = new List<List<double>>();
-    private DataContainer trainingData;
 
     [Header("Activation Functions")]
     [SerializeField] private ActivationFunctions hiddenLayerActivationFunction = ActivationFunctions.Sigmoid;
@@ -47,7 +46,7 @@ public class BasicANNInitializer
 
         if (isVisualizingANN) {
             try {
-                visualizationHandler.CreateVisualization(inputs.Count, numberOfHiddenNeurons, numberOfHiddenLayers, desiredOutputs.Count, FFANN.layers);
+                visualizationHandler.CreateVisualization(inputs.Count, numberOfHiddenNeurons, numberOfHiddenLayers, desiredOutputs.Count, FFANN.GetLayers());
             } catch (NullReferenceException e) {
                 Debug.LogError(e);
             }

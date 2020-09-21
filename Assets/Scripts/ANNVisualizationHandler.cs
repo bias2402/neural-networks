@@ -39,7 +39,7 @@ public class ANNVisualizationHandler : MonoBehaviour {
                         }
                         VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition, j);
                         visualNeurons.Add(vs);
-                        layers[i].neurons[j].SetupNeuronVisualization(vs.neuronVisualization);
+                        layers[i].GetNeurons()[j].SetupNeuronVisualization(vs.neuronVisualization);
                     }
                     GameObject counter = Instantiate(neuronCounter, counterPool);
                     counter.transform.localPosition = new Vector3(-xStart, 0, 0);
@@ -50,11 +50,11 @@ public class ANNVisualizationHandler : MonoBehaviour {
                         neuron.transform.localPosition = new Vector3(-xStart, yStart - (yOffset * j) - (maxNNeuorns - nI) * yOffset / 2, 0);
                         VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition, j);
                         visualNeurons.Add(vs);
-                        layers[i].neurons[j].SetupNeuronVisualization(vs.neuronVisualization);
+                        layers[i].GetNeurons()[j].SetupNeuronVisualization(vs.neuronVisualization);
                     }
                 }
             } else if (i == layers.Count - 1) {                 //Output layer
-                if (layers[i].neurons.Count > 5) {
+                if (layers[i].GetNeurons().Count > 5) {
                     for (int j = 0; j < nO; j++) {
                         GameObject neuron = Instantiate(ONeuron, neuronPool);
                         neuron.transform.localPosition = new Vector3(xStart, yStart - (yOffset * j) - (maxNNeuorns - nO) * yOffset / 2, 0);
@@ -65,7 +65,7 @@ public class ANNVisualizationHandler : MonoBehaviour {
                         }
                         VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition, j);
                         visualNeurons.Add(vs);
-                        layers[i].neurons[j].SetupNeuronVisualization(vs.neuronVisualization);
+                        layers[i].GetNeurons()[j].SetupNeuronVisualization(vs.neuronVisualization);
                     }
                     GameObject counter = Instantiate(neuronCounter, counterPool);
                     counter.transform.localPosition = new Vector3(xStart, 0, 0);
@@ -76,7 +76,7 @@ public class ANNVisualizationHandler : MonoBehaviour {
                         neuron.transform.localPosition = new Vector3(xStart, yStart - (yOffset * j) - (maxNNeuorns - nO) * yOffset / 2, 0);
                         VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition, j);
                         visualNeurons.Add(vs);
-                        layers[i].neurons[j].SetupNeuronVisualization(vs.neuronVisualization);
+                        layers[i].GetNeurons()[j].SetupNeuronVisualization(vs.neuronVisualization);
                     }
                 }
             } else {                                            //Hidden layers
@@ -91,7 +91,7 @@ public class ANNVisualizationHandler : MonoBehaviour {
                         }
                         VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition, j);
                         visualNeurons.Add(vs);
-                        layers[i].neurons[j].SetupNeuronVisualization(vs.neuronVisualization);
+                        layers[i].GetNeurons()[j].SetupNeuronVisualization(vs.neuronVisualization);
                     }
                     GameObject counter = Instantiate(neuronCounter, counterPool);
                     counter.transform.localPosition = new Vector3(-xStart + (xOffset * (i)), 0, 0);
@@ -102,7 +102,7 @@ public class ANNVisualizationHandler : MonoBehaviour {
                         neuron.transform.localPosition = new Vector3(-xStart + (xOffset * (i)), yStart - (yOffset * j) - (maxNNeuorns - nH) * yOffset / 2, 0);
                         VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.localPosition, j);
                         visualNeurons.Add(vs);
-                        layers[i].neurons[j].SetupNeuronVisualization(vs.neuronVisualization);
+                        layers[i].GetNeurons()[j].SetupNeuronVisualization(vs.neuronVisualization);
                     }
                 }
             }

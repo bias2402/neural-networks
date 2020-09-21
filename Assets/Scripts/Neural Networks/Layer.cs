@@ -5,7 +5,12 @@ using System;
 
 [Serializable]
 public class Layer {
-    public List<Neuron> neurons = new List<Neuron>();
+    [SerializeField] private List<Neuron> neurons = new List<Neuron>();
+
+    //Get & Set methods
+    #region
+    public List<Neuron> GetNeurons() { return neurons; }
+    #endregion
 
     public Layer(int numberOfNeuronsForLayer, List<double> inputs) {                                        //Hidden and output layer
         for (int i = 0; i < numberOfNeuronsForLayer; i++) {
