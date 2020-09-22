@@ -18,8 +18,8 @@ public class AgentExampleControls : MonoBehaviour {
 
     RaycastHit Raycast(Vector3 direction) {
         RaycastHit hit;
-        Ray ray = new Ray(transform.position, direction);
-        Physics.Raycast(ray, out hit, 5);
+        Ray ray = new Ray(transform.position + Vector3.down * 0.5f, direction);
+        Physics.Raycast(ray, out hit, 5, LayerMask.NameToLayer("Wall"));
         return hit;
     }
 
@@ -118,10 +118,15 @@ public class AgentExampleControls : MonoBehaviour {
 
     void RecordData() {
         RaycastHit hit0 = Raycast(transform.forward + Vector3.down * 0.5f);
-        RaycastHit hit45 = Raycast(transform.forward + transform.right + Vector3.down * 0.5f);
-        RaycastHit hit215 = Raycast(transform.forward - transform.right + Vector3.down * 0.5f);
+        RaycastHit hit45 = Raycast(transform.forward + transform.right);
+        RaycastHit hit215 = Raycast(transform.forward - transform.right);
 
-        Debug.DrawLine(transform.position, transform.position + transform.forward * 5 + Vector3.down * 0.5f, Color.yellow);
+        Debug.DrawLine(transform.position + Vector3.down * 0.5f, transform.forward * 5, Color.yellow);
+        Debug.DrawLine(transform.position + Vector3.down * 0.5f, (transform.forward + transform.right) * 5, Color.yellow);
+        Debug.DrawLine(transform.position + Vector3.down * 0.5f, (transform.forward - transform.right) * 5, Color.yellow);
+        Debug.Log("Hit0 " + hit0.collider);
+        Debug.Log("Hit45 " + hit45.collider);
+        Debug.Log("Hit215 " + hit215.collider);
 
         data.AddData(hit0.collider != null ? 1 : 0,
                         hit45.collider != null ? 1 : 0,
