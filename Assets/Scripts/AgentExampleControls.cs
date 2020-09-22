@@ -117,9 +117,12 @@ public class AgentExampleControls : MonoBehaviour {
     }
 
     void RecordData() {
-        RaycastHit hit0 = Raycast(Vector3.forward);
-        RaycastHit hit45 = Raycast(Vector3.forward + Vector3.right);
-        RaycastHit hit215 = Raycast(Vector3.forward + Vector3.left);
+        RaycastHit hit0 = Raycast(transform.forward + Vector3.down * 0.5f);
+        RaycastHit hit45 = Raycast(transform.forward + transform.right + Vector3.down * 0.5f);
+        RaycastHit hit215 = Raycast(transform.forward - transform.right + Vector3.down * 0.5f);
+
+        Debug.DrawLine(transform.position, transform.position + transform.forward * 5 + Vector3.down * 0.5f, Color.yellow);
+
         data.AddData(hit0.collider != null ? 1 : 0,
                         hit45.collider != null ? 1 : 0,
                         hit215.collider != null ? 1 : 0,

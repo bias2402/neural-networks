@@ -19,8 +19,8 @@ public class BasicANNInitializer
     private int outputNeuronFiring = 0;
 
     [Header("Inputs & Desired Outputs")]
-    private List<List<double>> inputs = new List<List<double>>();
-    private List<List<double>> desiredOutputs = new List<List<double>>();
+    [SerializeReference] private List<List<double>> inputs = new List<List<double>>();
+    [SerializeReference] private List<List<double>> desiredOutputs = new List<List<double>>();
 
     [Header("Activation Functions")]
     [SerializeField] private ActivationFunctions hiddenLayerActivationFunction = ActivationFunctions.Sigmoid;
