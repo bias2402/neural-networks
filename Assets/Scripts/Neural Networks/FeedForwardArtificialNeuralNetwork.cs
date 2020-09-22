@@ -19,7 +19,6 @@ public class FeedForwardArtificialNeuralNetwork {
     [SerializeField] private int epochCounter = 0;
     [SerializeField] private int trainingExecutionIndex = 0;
 
-
     //Get & Set methods
     #region
     public List<Layer> GetLayers() { return layers; }
@@ -82,6 +81,10 @@ public class FeedForwardArtificialNeuralNetwork {
         }
     }
 
+    public void PassInputs(List<List<double>> inputs) {
+        this.inputs = inputs;
+    }
+
     public bool Train() {
         if (isDelaying) {                                                                                   //If execution is delayed
             if (epochCounter < epochs) {                                                                        //As long as the epoch limit hasn't been reached
@@ -100,10 +103,7 @@ public class FeedForwardArtificialNeuralNetwork {
                 }
                 return false;                                                                                       
             } else {                                                                                            //If the epochs limit is reached, reset and print outputs
-                epochCounter = 0;                           
-                for (int i = 0; i < outputs.Count; i++) {
-                    Debug.Log("Output " + i + ": " + outputs[i]);
-                }
+                epochCounter = 0;
                 if (trainingExecutionIndex >= inputs[0].Count) trainingExecutionIndex = 0;
                 return true;
             }
@@ -114,24 +114,33 @@ public class FeedForwardArtificialNeuralNetwork {
                 trainingExecutionIndex++;
                 if (trainingExecutionIndex >= inputs[0].Count) trainingExecutionIndex = 0;
             }
-
-            for (int i = 0; i < outputs.Count; i++) {                                                           //Print the outputs
-                Debug.Log("Output " + i + ": " + outputs[i]);
-            }
             return true;
         }
     }
 
-    public double Run() {
+    public int Run() {
         if (layerIndex == 0) outputs.Clear();                                                               //Clear the outputs if layer index equals 0, to assure the list is cleared
+
+        for (int i = 0; i < layers[0].GetNeurons().Count; i++) {
+            layers[0].GetNeurons()[i].SetInputValueForInputNeuron(inputs[i][0]);
+        }
+
         CalculateOutput();
+
+        for (int i = 0; i < outputs.Count; i++) {
+            Debug.Log(outputs[i]);
+        } 
 
         if (outputs.Count > 0) {                                                                            //If outputs count is greater than 0, it means the outputs were properly calculated
             double max = -1;
+            int neuronIndex = 0;
             for (int i = 0; i < outputs.Count; i++) {
-                max = outputs[i] > max ? outputs[i] : max;                                                          //Find the best output, which is the neuron that should decide the action
+                if (outputs[i] > max) {                                                                             //Find the best output, which is the neuron that should decide the action
+                    max = outputs[i];
+                    neuronIndex = i;
+                }
             }
-            return max;
+            return neuronIndex;
         } else {
             return -1;
         }

@@ -24,9 +24,7 @@ public class AgentExampleControls : MonoBehaviour {
     }
 
     void Update() {
-        if (isAIAgent) {
-
-        } else {
+        if (!isAIAgent) {
             isRecievingInput = false;
             forward = 0;
             turn = 0;
@@ -64,29 +62,73 @@ public class AgentExampleControls : MonoBehaviour {
                 desiredOutputs.Add(new List<double>(data.aDown));
                 desiredOutputs.Add(new List<double>(data.dDown));
 
-                camTrans.position = new Vector3(0, 0, -425);
-                camTrans.rotation = Quaternion.Euler(0, 0, 0);
+                if (ANNInitializer.GetIsVisualizing()) {
+                    camTrans.position = new Vector3(0, 0, -425);
+                    camTrans.rotation = Quaternion.Euler(0, 0, 0);
+                }
 
                 ANNInitializer.PassData(inputs, desiredOutputs);
                 ANNInitializer.CreateANN();
-                ANNInitializer.Run();
+
+                isAIAgent = true;
+
+                ANNInitializer.Run(true);
             }
 
-            if (isRecievingInput) {
-                RaycastHit hit0 = Raycast(Vector3.forward);
-                RaycastHit hit45 = Raycast(Vector3.forward + Vector3.right);
-                RaycastHit hit215 = Raycast(Vector3.forward + Vector3.left);
-                data.AddData(hit0.collider != null ? 1 : 0,
-                             hit45.collider != null ? 1 : 0,
-                             hit215.collider != null ? 1 : 0,
-                             hit0.collider != null ? Vector3.Distance(transform.position, hit0.collider.transform.position) : -1,
-                             hit45.collider != null ? Vector3.Distance(transform.position, hit45.collider.transform.position) : -1,
-                             hit215.collider != null ? Vector3.Distance(transform.position, hit215.collider.transform.position) : -1,
-                             forward > 0 ? 1 : 0,
-                             turn < 0 ? 1 : 0,
-                             turn > 0 ? 1 : 0);
+            if (isRecievingInput) RecordData();
+        } else {
+            data.ClearData();
+            RecordData();
+
+            List<List<double>> inputs = new List<List<double>>();
+            List<List<double>> desiredOutputs = new List<List<double>>();
+            inputs.Add(new List<double>(data.hit0));
+            inputs.Add(new List<double>(data.hit45));
+            inputs.Add(new List<double>(data.hit215));
+            inputs.Add(new List<double>(data.dist0));
+            inputs.Add(new List<double>(data.dist45));
+            inputs.Add(new List<double>(data.dist215));
+            desiredOutputs.Add(new List<double>(data.wDown));
+            desiredOutputs.Add(new List<double>(data.aDown));
+            desiredOutputs.Add(new List<double>(data.dDown));
+
+            ANNInitializer.PassData(inputs, desiredOutputs, true);
+            ANNInitializer.Run(false);
+
+            Debug.Log(ANNInitializer.GetFiringOutputNeuron());
+
+            switch (ANNInitializer.GetFiringOutputNeuron()) {
+                case 0:
+                    forward = 10 * Time.deltaTime;
+                    turn = 0;
+                    break;
+                case 1:
+                    forward = 0;
+                    turn = -150 * Time.deltaTime;
+                    break;
+                case 2:
+                    forward = 0;
+                    turn = 150 * Time.deltaTime;
+                    break;
             }
+            Walk();
+            Turn();
         }
+    }
+
+    void RecordData() {
+        RaycastHit hit0 = Raycast(Vector3.forward);
+        RaycastHit hit45 = Raycast(Vector3.forward + Vector3.right);
+        RaycastHit hit215 = Raycast(Vector3.forward + Vector3.left);
+        data.AddData(hit0.collider != null ? 1 : 0,
+                        hit45.collider != null ? 1 : 0,
+                        hit215.collider != null ? 1 : 0,
+                        hit0.collider != null ? Vector3.Distance(transform.position, hit0.collider.transform.position) : -1,
+                        hit45.collider != null ? Vector3.Distance(transform.position, hit45.collider.transform.position) : -1,
+                        hit215.collider != null ? Vector3.Distance(transform.position, hit215.collider.transform.position) : -1,
+                        forward > 0 ? 1 : 0,
+                        turn < 0 ? 1 : 0,
+                        turn > 0 ? 1 : 0);
     }
 
     void Walk() => transform.Translate(Vector3.forward * (float)forward);
@@ -135,5 +177,17 @@ public class DataContainer {
                 }
             }
         }
+    }
+
+    public void ClearData() {
+        hit0.Clear();
+        hit45.Clear();
+        hit215.Clear();
+        dist0.Clear();
+        dist45.Clear();
+        dist215.Clear();
+        wDown.Clear();
+        aDown.Clear();
+        dDown.Clear();
     }
 }

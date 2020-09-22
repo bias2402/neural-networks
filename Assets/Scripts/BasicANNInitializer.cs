@@ -16,6 +16,7 @@ public class BasicANNInitializer
     [SerializeField] private float delay = 1;
     [SerializeField] private int epochSteps = 1;
     private float delayCounter = 0;
+    private int outputNeuronFiring = 0;
 
     [Header("Inputs & Desired Outputs")]
     private List<List<double>> inputs = new List<List<double>>();
@@ -56,14 +57,18 @@ public class BasicANNInitializer
         FFANN.Train();
     }
 
-    public void PassData(List<List<double>> inputs, List<List<double>> desiredOutputs) {
+    public void PassData(List<List<double>> inputs, List<List<double>> desiredOutputs, bool passOnToCurrentANN = false) {
         this.inputs = inputs;
         this.desiredOutputs = desiredOutputs;
+
+        if (passOnToCurrentANN) {
+            FFANN.PassInputs(inputs);
+        }
     }
 
-    public void Run() {
-        isTraining = true;
-        isCalculating = false;
+    public void Run(bool isTraining) {
+        this.isTraining = isTraining;
+        isCalculating = !isTraining;
     }
 
     void Update() {
@@ -90,11 +95,9 @@ public class BasicANNInitializer
                     } else {
                         delayCounter = 0;
                         if (isCalculating) {
-                            double result = FFANN.Run();
-                            if (result != -1) {
+                            outputNeuronFiring = FFANN.Run();
+                            if (outputNeuronFiring != -1) {
                                 isCalculating = false;
-                                if (isVisualizingANN) visualizationHandler.SetOutputText("Best output: " + result);
-                                else Debug.Log(result);
                             }
                         } else if (isTraining) {
                             bool isDone = FFANN.Train();
@@ -107,13 +110,15 @@ public class BasicANNInitializer
             } else {
                 delayCounter = 0;
                 if (isCalculating) {
-                    double result = FFANN.Run();
-                    if (isVisualizingANN) visualizationHandler.SetOutputText("Best output: " + result);
-                    else Debug.Log(result);
+                    outputNeuronFiring = FFANN.Run();
                 } else if (isTraining) {
                     FFANN.Train();
                 }
             }
         }
     }
+
+    public int GetFiringOutputNeuron() { return outputNeuronFiring; }
+
+    public bool GetIsVisualizing() { return isVisualizingANN; }
 }
