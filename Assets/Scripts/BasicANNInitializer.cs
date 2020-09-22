@@ -14,6 +14,7 @@ public class BasicANNInitializer
     [SerializeField] private int numberOfHiddenNeurons = 4;
     [SerializeField] private bool isDelayingExecution = false;
     [SerializeField] private float delay = 1;
+    [SerializeField] private int epochSteps = 1;
     private float delayCounter = 0;
 
     [Header("Inputs & Desired Outputs")]
@@ -38,6 +39,7 @@ public class BasicANNInitializer
         numberOfHiddenNeurons = numberOfHiddenNeurons < 2 ? 2 : numberOfHiddenNeurons;
         isDelayingExecution = isVisualizingANN ? isDelayingExecution : false;
         delay = isDelayingExecution && delay <= 0 ? 0.5f : delay;
+        epochSteps = isDelayingExecution ? epochSteps : epochs;
     }
 
     public void CreateANN() {
@@ -59,6 +61,11 @@ public class BasicANNInitializer
         this.desiredOutputs = desiredOutputs;
     }
 
+    public void Run() {
+        isTraining = true;
+        isCalculating = false;
+    }
+
     void Update() {
         if (Input.GetKeyDown(KeyCode.T) && !isCalculating && !isTraining) {
             isCalculating = false;
@@ -74,24 +81,26 @@ public class BasicANNInitializer
 
         if (isCalculating || isTraining) {
             if (isDelayingExecution) {
-                if (delayCounter == 0) {
-                    FFANN.SetNextLayerAsWorking();
-                    delayCounter += Time.deltaTime;
-                } else if (delayCounter < delay) {
-                    delayCounter += Time.deltaTime;
-                } else {
-                    delayCounter = 0;
-                    if (isCalculating) {
-                        double result = FFANN.Run();
-                        if (result != -1) {
-                            isCalculating = false;
-                            if (isVisualizingANN) visualizationHandler.SetOutputText("Best output: " + result);
-                            else Debug.Log(result);
-                        }
-                    } else if (isTraining) {
-                        bool isDone = FFANN.Train();
-                        if (isDone) {
-                            isTraining = false;
+                for (int i = 0; i < epochSteps; i++) {
+                    if (delayCounter == 0) {
+                        FFANN.SetNextLayerAsWorking();
+                        delayCounter += Time.deltaTime;
+                    } else if (delayCounter < delay) {
+                        delayCounter += Time.deltaTime;
+                    } else {
+                        delayCounter = 0;
+                        if (isCalculating) {
+                            double result = FFANN.Run();
+                            if (result != -1) {
+                                isCalculating = false;
+                                if (isVisualizingANN) visualizationHandler.SetOutputText("Best output: " + result);
+                                else Debug.Log(result);
+                            }
+                        } else if (isTraining) {
+                            bool isDone = FFANN.Train();
+                            if (isDone) {
+                                isTraining = false;
+                            }
                         }
                     }
                 }

@@ -12,7 +12,6 @@ public class Neuron {
     [SerializeReference] private List<double> weights = new List<double>();
     [SerializeReference] private List<double> inputs = new List<double>();
     [SerializeField] private double output = 0;
-    [SerializeField] private double desiredOutput = 0;
     [SerializeField] private double errorGradient = 0;
     [SerializeField] private string name = "";
 
@@ -40,8 +39,6 @@ public class Neuron {
 
     public void SetInputValueForInputNeuron(double inputValue) => this.inputValue = inputValue;
 
-    public void SetDesiredOutputValueForOutputNeuron(double desiredOutputValue) => desiredOutput = desiredOutputValue;
-
     public void SetActivationFunction(ActivationFunctions activationFunction) => this.activationFunction = activationFunction;
     #endregion
 
@@ -61,7 +58,7 @@ public class Neuron {
     //Input neuron constructor for live-training
     public Neuron() => isInputNeuron = true;
 
-    //Input neuron for pre-training
+    //Input neuron constructor for pre-training
     public Neuron(double inputValue) {
         this.inputValue = inputValue;
     }
@@ -84,7 +81,7 @@ public class Neuron {
             value += inputs[i] * weights[i];                                                                    //Calculate the output value by multiplying weights and inputs
         }
         value -= bias;                                                                                      //Subtract the bias to apply the bias of the neuron
-        output = ActivationFunctionHandler.TriggerActivationFunction(activationFunction, value);            //Throw the through the chosen activation function to calculate the final output
+        output = ActivationFunctionHandler.TriggerActivationFunction(activationFunction, value);            //Throw the output through the chosen activation function to calculate the final output
 
         if (isVisualizing) {
             neuronVisualization.UpdateNeuronImage((float)output);

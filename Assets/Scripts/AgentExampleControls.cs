@@ -5,6 +5,7 @@ using UnityEngine;
 public class AgentExampleControls : MonoBehaviour {
     [SerializeField] private bool isAIAgent = false;
     [SerializeField] private BasicANNInitializer ANNInitializer = null;
+    [SerializeField] private Transform camTrans = null;
     private bool isRecievingInput = false;
     private double forward = 0;
     private double turn = 0;
@@ -12,6 +13,7 @@ public class AgentExampleControls : MonoBehaviour {
 
     void Start() {
         data = new DataContainer();
+        if (camTrans == null) camTrans = Camera.main.transform;
     }
 
     RaycastHit Raycast(Vector3 direction) {
@@ -62,8 +64,12 @@ public class AgentExampleControls : MonoBehaviour {
                 desiredOutputs.Add(new List<double>(data.aDown));
                 desiredOutputs.Add(new List<double>(data.dDown));
 
+                camTrans.position = new Vector3(0, 0, -425);
+                camTrans.rotation = Quaternion.Euler(0, 0, 0);
+
                 ANNInitializer.PassData(inputs, desiredOutputs);
                 ANNInitializer.CreateANN();
+                ANNInitializer.Run();
             }
 
             if (isRecievingInput) {

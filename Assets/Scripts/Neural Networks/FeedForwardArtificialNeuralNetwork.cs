@@ -91,16 +91,20 @@ public class FeedForwardArtificialNeuralNetwork {
                 for (int i = 0; i < layers[layers.Count - 1].GetNeurons().Count; i++) {
                     layers[layers.Count - 1].PassDataToNeuron(i, desiredOutputs[i][trainingExecutionIndex]);            //Pass desiredOutputs to the output neurons
                 }
-                CalculateOutput();                                                                         
-                Backpropagation();                                                                         
-                epochCounter++;                                                                              
-                trainingExecutionIndex++;                                                                         
+                CalculateOutput();
+                Backpropagation();
+                trainingExecutionIndex++;
+                if (trainingExecutionIndex >= inputs[0].Count) {
+                    trainingExecutionIndex = 0;
+                    epochCounter++;
+                }
                 return false;                                                                                       
             } else {                                                                                            //If the epochs limit is reached, reset and print outputs
                 epochCounter = 0;                           
                 for (int i = 0; i < outputs.Count; i++) {
                     Debug.Log("Output " + i + ": " + outputs[i]);
                 }
+                if (trainingExecutionIndex >= inputs[0].Count) trainingExecutionIndex = 0;
                 return true;
             }
         } else {                                                                                            //If the execution isn't delayed
@@ -108,6 +112,7 @@ public class FeedForwardArtificialNeuralNetwork {
                 CalculateOutput();
                 Backpropagation();
                 trainingExecutionIndex++;
+                if (trainingExecutionIndex >= inputs[0].Count) trainingExecutionIndex = 0;
             }
 
             for (int i = 0; i < outputs.Count; i++) {                                                           //Print the outputs
@@ -177,7 +182,7 @@ public class FeedForwardArtificialNeuralNetwork {
         double error = 0;
         for (int i = 0; i < layers[outputLayer].GetNeurons().Count; i++) {   //Iterate the neurons in the output layer
             //Calculate the error for the neuron by subtracting the actual output from the desired output  of this output neuron
-            error = desiredOutputs[trainingExecutionIndex][i] - layers[outputLayer].GetNeurons()[i].GetOutput();
+            error = desiredOutputs[i][trainingExecutionIndex] - layers[outputLayer].GetNeurons()[i].GetOutput();
             //Calculate the errorGradient for the neuron (used for the errorGradientSum in the hidden layer to follow)
             layers[outputLayer].GetNeurons()[i].SetErrorGradient(layers[outputLayer].GetNeurons()[i].GetOutput() * (1 - layers[outputLayer].GetNeurons()[i].GetOutput()) * error, true);
             //Update the neuron's weights

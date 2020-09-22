@@ -182,7 +182,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 380015155}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.2581487, y: 0.99278355, z: 0.24519801}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1626162760}
@@ -609,13 +609,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.23785526, y: -0.6641519, z: 0.2364314, w: 0.66815215}
-  m_LocalPosition: {x: 15.615822, y: 9.840809, z: 0.11174691}
+  m_LocalRotation: {x: 0.3420201, y: 0, z: 0, w: 0.9396927}
+  m_LocalPosition: {x: 0, y: 10, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 40, y: 0, z: 0}
 --- !u!1 &1009518332
 GameObject:
   m_ObjectHideFlags: 0
@@ -1386,7 +1386,8 @@ MonoBehaviour:
   numberOfHiddenLayers: 2
   numberOfHiddenNeurons: 5
   isDelayingExecution: 1
-  delay: 0.5
+  delay: 0.2
+  epochSteps: 100
   hiddenLayerActivationFunction: 1
   outputLayerActivationFunction: 1
   isVisualizingANN: 1
@@ -1573,7 +1574,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1626162756}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.2581487, y: -0.99278355, z: -0.24519801}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 20, y: 0.1, z: 20}
   m_Children:
   - {fileID: 436623306}
@@ -1611,8 +1612,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1655441225}
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.008950233, y: 0.31999993, z: 0.009946078}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0, y: 1.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1096775157}
@@ -1622,7 +1623,7 @@ Transform:
   - {fileID: 1382372903}
   m_Father: {fileID: 380015156}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!136 &1655441227
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1700,6 +1701,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isAIAgent: 0
   ANNInitializer: {fileID: 1405823758}
+  camTrans: {fileID: 0}
 --- !u!54 &1655441231
 Rigidbody:
   m_ObjectHideFlags: 0
