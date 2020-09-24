@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 92933e9234b97be489af0ffcadf853db, type: 3}
-  m_Name: TestData
+  m_Name: LiveData
   m_EditorClassIdentifier: 
   hit0: []
   hit45: []

@@ -17,8 +17,12 @@ public class BasicANNInitializer : MonoBehaviour {
     [SerializeField] private bool isDelayingExecution = false;
     [SerializeField] private float delay = 1;
     [SerializeField] private int epochSteps = 1;
+    [SerializeField] private int currentEpoch = 0;
     private float delayCounter = 0;
     private int outputNeuronFiring = 0;
+
+    public bool isWorking = false;
+    private float workingCounter = 0;
 
     [Header("Inputs & Desired Outputs")]
     [SerializeReference] private List<List<double>> inputs = new List<List<double>>();
@@ -78,42 +82,27 @@ public class BasicANNInitializer : MonoBehaviour {
     }
 
     void Update() {
-        if (Input.GetKeyDown(KeyCode.G)) {
-            CreateANN();
-        }
-
-        if (Input.GetKeyDown(KeyCode.T) && !isCalculating && !isTraining) {
-            isCalculating = false;
-            isTraining = true;
-            FFANN.Reset();
-        }
-
-        if (Input.GetKeyDown(KeyCode.C) && !isCalculating && !isTraining) {
-            isCalculating = true;
-            isTraining = false;
-            FFANN.Reset();
-        }
-
         if (isCalculating || isTraining) {
+            isWorking = true;
             if (isDelayingExecution) {
-                for (int i = 0; i < epochSteps; i++) {
-                    if (delayCounter == 0) {
-                        FFANN.SetNextLayerAsWorking();
-                        delayCounter += Time.deltaTime;
-                    } else if (delayCounter < delay) {
-                        delayCounter += Time.deltaTime;
-                    } else {
-                        delayCounter = 0;
-                        if (isCalculating) {
-                            outputNeuronFiring = FFANN.Run();
-                            if (outputNeuronFiring != -1) {
-                                isCalculating = false;
-                            }
-                        } else if (isTraining) {
-                            bool isDone = FFANN.Train();
-                            if (isDone) {
-                                isTraining = false;
-                            }
+                if (delayCounter == 0) {
+                    FFANN.SetNextLayerAsWorking();
+                    delayCounter += Time.deltaTime;
+                } else if (delayCounter < delay) {
+                    delayCounter += Time.deltaTime;
+                } else {
+                    delayCounter = 0;
+                    if (isCalculating) {
+                        outputNeuronFiring = FFANN.Run();
+                        if (outputNeuronFiring != -1) {
+                            isCalculating = false;
+                        }
+                    } else if (isTraining) {
+                        bool isDone = FFANN.Train();
+                        if (isDone) {
+                            isTraining = false;
+                        } else {
+                            currentEpoch = FFANN.GetCurrentEpoch();
                         }
                     }
                 }
@@ -121,9 +110,22 @@ public class BasicANNInitializer : MonoBehaviour {
                 delayCounter = 0;
                 if (isCalculating) {
                     outputNeuronFiring = FFANN.Run();
+                    if (outputNeuronFiring != -1) {
+                        isCalculating = false;
+                    }
                 } else if (isTraining) {
-                    FFANN.Train();
+                    bool isDone = FFANN.Train();
+                    if (isDone) {
+                        isTraining = false;
+                    }
                 }
+            }
+        }
+        if (isWorking) {
+            workingCounter += Time.deltaTime;
+            if (workingCounter > 0.1f) {
+                workingCounter = 0;
+                isWorking = false;
             }
         }
     }
