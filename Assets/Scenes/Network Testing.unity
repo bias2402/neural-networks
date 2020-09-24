@@ -1381,13 +1381,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39921f604527e8d48b5f9950f49ed058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  epochs: 100000
+  ANNData: {fileID: 11400000, guid: 3b4a20a98cc7f3f4fb03212aedb64ef0, type: 2}
+  epochs: 10000
   alpha: 0.05
   numberOfHiddenLayers: 2
   numberOfHiddenNeurons: 5
   isDelayingExecution: 0
   delay: 0.2
-  epochSteps: 100000
+  epochSteps: 10000
   hiddenLayerActivationFunction: 1
   outputLayerActivationFunction: 1
   isVisualizingANN: 0
@@ -1701,7 +1702,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isAIAgent: 0
   ANNInitializer: {fileID: 1405823758}
-  camTrans: {fileID: 0}
+  camTrans: {fileID: 963194228}
+  testData: {fileID: 11400000, guid: 3b4a20a98cc7f3f4fb03212aedb64ef0, type: 2}
 --- !u!54 &1655441231
 Rigidbody:
   m_ObjectHideFlags: 0

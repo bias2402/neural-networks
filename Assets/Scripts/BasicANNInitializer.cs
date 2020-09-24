@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class BasicANNInitializer
-    : MonoBehaviour {
+public class BasicANNInitializer : MonoBehaviour {
+    [Header("ANN Data")]
+    [SerializeField] private SOANNData ANNData = null;
+
     [Header("ANN Settings")]
     [SerializeField] private FeedForwardArtificialNeuralNetwork FFANN = null;
     [SerializeField] private int epochs = 100;
@@ -44,6 +46,10 @@ public class BasicANNInitializer
     }
 
     public void CreateANN() {
+        if (ANNData != null) {
+            inputs = new List<List<double>>(ANNData.CreateInputs());
+            desiredOutputs = new List<List<double>>(ANNData.CreateDesiredOutputs());
+        }
         FFANN = new FeedForwardArtificialNeuralNetwork(epochs, alpha, numberOfHiddenLayers, numberOfHiddenNeurons, inputs, desiredOutputs,
             hiddenLayerActivationFunction, outputLayerActivationFunction, isDelayingExecution);
 
@@ -72,6 +78,10 @@ public class BasicANNInitializer
     }
 
     void Update() {
+        if (Input.GetKeyDown(KeyCode.G)) {
+            CreateANN();
+        }
+
         if (Input.GetKeyDown(KeyCode.T) && !isCalculating && !isTraining) {
             isCalculating = false;
             isTraining = true;
