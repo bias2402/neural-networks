@@ -1399,7 +1399,7 @@ MonoBehaviour:
   alpha: 0.1
   numberOfHiddenLayers: 2
   numberOfHiddenNeurons: 5
-  isDelayingExecution: 1
+  isDelayingExecution: 0
   delay: 0.001
   epochSteps: 500
   currentEpoch: 0
@@ -1720,6 +1720,7 @@ MonoBehaviour:
   camTrans: {fileID: 963194228}
   trainingData: {fileID: 11400000, guid: 3b4a20a98cc7f3f4fb03212aedb64ef0, type: 2}
   liveData: {fileID: 11400000, guid: fb54d8fb46fd83245bf92656074866ef, type: 2}
+  rayLength: 10
 --- !u!54 &1655441231
 Rigidbody:
   m_ObjectHideFlags: 0
