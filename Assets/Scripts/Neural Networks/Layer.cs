@@ -12,20 +12,15 @@ public class Layer {
     public List<Neuron> GetNeurons() { return neurons; }
     #endregion
 
-    public Layer(int numberOfNeuronsForLayer, List<double> inputs) {                                        //Hidden and output layer
+    public Layer(int numberOfNeuronsForLayer, int numberOfInputs = -1) {                                    //Input layer
         for (int i = 0; i < numberOfNeuronsForLayer; i++) {
-            neurons.Add(new Neuron(inputs));
-        }
-    }
-
-    public Layer(int numberOfNeuronsForLayer) {                                                             //Input layer
-        for (int i = 0; i < numberOfNeuronsForLayer; i++) {
-            neurons.Add(new Neuron());
+            if (numberOfInputs != -1) neurons.Add(new Neuron(numberOfInputs));
+            else neurons.Add(new Neuron());
         }
     }
 
     public void PassDataToNeuron(int neuronIndex, double data) {
-        neurons[neuronIndex].SetInputValueForInputNeuron(data);
+        neurons[neuronIndex].SetInputValueForNeuron(data);
     }
 
     public void SetActivationFunctionForLayersNeurons(ActivationFunctions activationFunction) {

@@ -8,6 +8,7 @@ public class AgentExampleControls : MonoBehaviour {
     [SerializeField] private Transform camTrans = null;
     [SerializeField] private SOANNData trainingData;
     [SerializeField] private SOANNData liveData;
+    [SerializeField] private int rayLength = 5;
     private bool isRecievingInput = false;
     private double forward = 0;
     private double turn = 0;
@@ -49,9 +50,9 @@ public class AgentExampleControls : MonoBehaviour {
                 ANNInitializer.Run(true);
             }
 
-            if (Input.GetKeyDown(KeyCode.C)) {
-                trainingData.CleanData();
-            }
+            if (Input.GetKeyDown(KeyCode.C)) trainingData.CleanData();
+
+            if (Input.GetKeyDown(KeyCode.N)) trainingData.ClearData();
 
             if (isRecievingInput) RecordData();
         } else {
@@ -80,14 +81,14 @@ public class AgentExampleControls : MonoBehaviour {
                 Turn();
             }
         }
-        Debug.DrawRay(transform.position + Vector3.up * 0.5f, transform.forward * 20);
-        Debug.DrawRay(transform.position + Vector3.up * 0.5f, (transform.forward + transform.right) * 20);
-        Debug.DrawRay(transform.position + Vector3.up * 0.5f, (transform.forward - transform.right) * 20);
+        Debug.DrawRay(transform.position + Vector3.up * 0.5f, transform.forward * rayLength);
+        Debug.DrawRay(transform.position + Vector3.up * 0.5f, (transform.forward + transform.right) * rayLength);
+        Debug.DrawRay(transform.position + Vector3.up * 0.5f, (transform.forward - transform.right) * rayLength);
     }
 
     RaycastHit Raycast(Vector3 direction) {
         Ray ray = new Ray(transform.position + Vector3.down * 0.5f, direction);
-        Physics.Raycast(ray, out RaycastHit hit, 20);
+        Physics.Raycast(ray, out RaycastHit hit, rayLength);
         return hit;
     }
 

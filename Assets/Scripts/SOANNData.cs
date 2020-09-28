@@ -32,13 +32,20 @@ public class SOANNData : ScriptableObject {
 
     public void CleanData() {
         for (int i = 0; i < hit0.Count; i++) {
-            for (int j = i; j < dist0.Count; j++) {
+            for (int j = i + 1; j < hit0.Count; j++) {
                 if (hit0[i] == hit0[j] &&
                     hit45[i] == hit45[j] &&
                     hit215[i] == hit215[j] &&
                     dist0[i] == dist0[j] &&
                     dist45[i] == dist45[j] &&
                     dist215[i] == dist215[j]) {
+                    Debug.Log(hit0[i] + " " + hit0[j]);
+                    Debug.Log(hit45[i] + " " + hit45[j]);
+                    Debug.Log(hit215[i] + " " + hit215[j]);
+                    Debug.Log(dist0[i] + " " + dist0[j]);
+                    Debug.Log(dist45[i] + " " + dist45[j]);
+                    Debug.Log(dist215[i] + " " + dist215[j]);
+
                     hit0.RemoveAt(j);
                     hit45.RemoveAt(j);
                     hit215.RemoveAt(j);

@@ -1382,13 +1382,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ANNData: {fileID: 11400000, guid: 3b4a20a98cc7f3f4fb03212aedb64ef0, type: 2}
-  epochs: 10000
-  alpha: 0.05
+  FFANN:
+    epochs: 0
+    alpha: 0
+    numberOfHiddenLayers: 0
+    numberOfHiddenNeurons: 0
+    outputs: []
+    layers: []
+    hiddenLayerActivationFunction: 0
+    outputLayerActivationFunction: 0
+    isDelaying: 0
+    layerIndex: 0
+    epochCounter: 0
+    trainingIndex: 0
+  epochs: 500
+  alpha: 0.1
   numberOfHiddenLayers: 2
   numberOfHiddenNeurons: 5
   isDelayingExecution: 1
   delay: 0.001
-  epochSteps: 10000
+  epochSteps: 500
   currentEpoch: 0
   isWorking: 0
   hiddenLayerActivationFunction: 1
@@ -1578,7 +1591,7 @@ Transform:
   m_GameObject: {fileID: 1626162756}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 100, y: 0.1, z: 100}
+  m_LocalScale: {x: 30, y: 0.1, z: 30}
   m_Children:
   - {fileID: 436623306}
   - {fileID: 1037911938}

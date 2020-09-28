@@ -35,23 +35,25 @@ public class Neuron {
 
     public double GetErrorGradient() { return errorGradient; }
 
-    public void SetErrorGradient(double delta, bool set) => errorGradient = set ? delta : errorGradient * delta;
+    public void SetErrorGradient(double delta) => errorGradient = delta;
 
-    public void SetInputValueForInputNeuron(double inputValue) => this.inputValue = inputValue;
+    public void SetInputValueForNeuron(double inputValue) => this.inputValue = inputValue;
 
     public void SetActivationFunction(ActivationFunctions activationFunction) => this.activationFunction = activationFunction;
+
+    public ActivationFunctions GetActivationFunction() { return activationFunction; }
     #endregion
 
     //Hidden or Output neuron constructor
-    public Neuron(List<double> inputs) {
-        if (inputs.Count <= 0) {
+    public Neuron(int numberOfInputs) {
+        if (numberOfInputs <= 0) {
             Debug.LogError("A neuron must have a positive number of inputs!");
             return;
         }
         bias = UnityEngine.Random.Range(-1f, 1f);                                                           //Randomize the start bias
-        this.inputs = inputs;
-        for (int i = 0; i < inputs.Count; i++) {
-            weights.Add(UnityEngine.Random.Range(-1f, 1f));                                                     //Add a weight for each input and randomize the start value
+        for (int i = 0; i < numberOfInputs; i++) {
+            inputs.Add(0);                                                                                      //Add an input for each number of inputs
+            weights.Add(UnityEngine.Random.Range(-1f, 1f));                                                     //Add a weight for each number of inputs and randomize the start value
         }
     }
 
@@ -63,7 +65,7 @@ public class Neuron {
         this.inputValue = inputValue;
     }
 
-    public void CalculateOutput() {
+    public void CalculateOutput(Layer layer = null) {
         if (isInputNeuron) {                                                                                //If the neuron is an input neuron, set its output to input
             output = inputValue;
 
@@ -72,6 +74,10 @@ public class Neuron {
                 neuronVisualization.UpdateConnection((float)output);
             }
             return;
+        }
+        inputs.Clear();
+        foreach (Neuron n in layer.GetNeurons()) {
+            inputs.Add(n.GetOutput());
         }
 
         double value = 0;
