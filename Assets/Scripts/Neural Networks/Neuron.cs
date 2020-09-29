@@ -25,6 +25,8 @@ public class Neuron {
     #region
     public void SetName(string name) => this.name = name;
 
+    public string GetName() { return name; }
+
     public void SetBias(double delta) => bias += delta;
 
     public List<double> GetWeights() { return weights; }
@@ -44,6 +46,9 @@ public class Neuron {
     public ActivationFunctions GetActivationFunction() { return activationFunction; }
     #endregion
 
+    //Input neuron constructor
+    public Neuron() => isInputNeuron = true;
+
     //Hidden or Output neuron constructor
     public Neuron(int numberOfInputs) {
         if (numberOfInputs <= 0) {
@@ -55,14 +60,6 @@ public class Neuron {
             inputs.Add(0);                                                                                      //Add an input for each number of inputs
             weights.Add(UnityEngine.Random.Range(-1f, 1f));                                                     //Add a weight for each number of inputs and randomize the start value
         }
-    }
-
-    //Input neuron constructor for live-training
-    public Neuron() => isInputNeuron = true;
-
-    //Input neuron constructor for pre-training
-    public Neuron(double inputValue) {
-        this.inputValue = inputValue;
     }
 
     public void CalculateOutput(Layer layer = null) {

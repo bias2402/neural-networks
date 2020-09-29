@@ -44,15 +44,15 @@ public class FeedForwardArtificialNeuralNetwork {
 
     void Initialize() {
         //Input layer
-        layers.Add(new Layer(inputs.Count));                                                                //Create the input layer
+        layers.Add(new Layer(inputs.Count, null));                                                          //Create the input layer
 
         //Hidden layers
         for (int i = 0; i < numberOfHiddenLayers; i++) {
-            layers.Add(new Layer(numberOfHiddenNeurons, layers[layers.Count - 1].GetNeurons().Count));      //Create a new hidden layers
+            layers.Add(new Layer(numberOfHiddenNeurons, layers[layers.Count - 1]));                         //Create a new hidden layers
         }
 
         //Output layer
-        layers.Add(new Layer(desiredOutputs.Count, desiredOutputs.Count));                                  //Create the output layer
+        layers.Add(new Layer(desiredOutputs.Count, layers[layers.Count - 1]));                              //Create the output layer
 
         //Set activation functions (AF) for layers
         for (int i = 1; i < layers.Count - 1; i++) {
@@ -64,11 +64,11 @@ public class FeedForwardArtificialNeuralNetwork {
             for (int j = 0; j < layers[i].GetNeurons().Count; j++) {                                            //Go through all neurons
                 string name = "";                                                                       
                 if (layers[i] == layers[0]) {
-                    name += "Input " + i + ", " + j;
+                    name += "Input " + i + "," + j;
                 } else if (layers[i] == layers[layers.Count - 1]) {
-                    name += "Output " + i + ", " + j;
+                    name += "Output " + i + "," + j;
                 } else {
-                    name += "Hidden " + i + ", " + j;
+                    name += "Hidden " + i + "," + j;
                 }
 
                 layers[i].GetNeurons()[j].SetName(name);                                                        //Build a name (string) and set the name. Name is used for debugging
@@ -80,7 +80,7 @@ public class FeedForwardArtificialNeuralNetwork {
         this.inputs = inputs;
     }
 
-    public bool Train() {
+    public bool Train(int epochsForStep = 0) {
         if (isDelaying) {                                                                                   //If execution is delayed
             if (epochCounter < epochs) {                                                                        //As long as the epoch limit hasn't been reached
                 for (int j = 0; j < layers[0].GetNeurons().Count; j++) {
@@ -102,28 +102,57 @@ public class FeedForwardArtificialNeuralNetwork {
             } else {                                                                                            //If the epochs limit is reached, reset and print outputs
                 epochCounter = 0;
                 for (int i = 0; i < outputs.Count; i++) {
-                    Debug.Log(outputs[i]);
+                    Debug.Log(layers[layers.Count - 1].GetNeurons()[i].GetName() + ": " + outputs[i]);
                 }
                 return true;
             }
         } else {                                                                                            //If the execution isn't delayed
-            for (int i = 0; i < epochs; i++) {                                                                  //Run through all the epochs in one frame
-                for (int j = 0; j < inputs[0].Count; j++) {                                                         //Run through all the training data
-                    for (int k = 0; k < layers[0].GetNeurons().Count; k++) {
-                        layers[0].PassDataToNeuron(k, inputs[k][j]);                                                        //Pass information to the input neurons
+            if (epochsForStep > 0) {
+                for (int i = 0; i < epochsForStep; i++) {                                                           //Run through all the epochs in one frame
+                    if (epochCounter >= epochs) break;
+                    for (int j = 0; j < inputs[0].Count; j++) {                                                         //Run through all the training data
+                        for (int k = 0; k < layers[0].GetNeurons().Count; k++) {
+                            layers[0].PassDataToNeuron(k, inputs[k][j]);                                                        //Pass information to the input neurons
+                        }
+                        for (int k = 0; k < layers[layers.Count - 1].GetNeurons().Count; k++) {
+                            layers[layers.Count - 1].PassDataToNeuron(k, desiredOutputs[k][j]);                                 //Pass desiredOutputs to the output neurons
+                        }
+                        trainingIndex = j;                                                                                  //Set trainingIndex to i, so it can be used for backpropagation
+                        CalculateOutput();
+                        Backpropagation();
                     }
-                    for (int k = 0; k < layers[layers.Count - 1].GetNeurons().Count; k++) {
-                        layers[layers.Count - 1].PassDataToNeuron(k, desiredOutputs[k][j]);                                 //Pass desiredOutputs to the output neurons
-                    }
-                    trainingIndex = j;                                                                                  //Set trainingIndex to i, so it can be used for backpropagation
-                    CalculateOutput();
-                    Backpropagation();
+                    epochCounter++;
                 }
+                if (epochCounter == epochs) {
+                    Debug.Log(epochsForStep + " epochs completed. " + (epochs - epochCounter) + " epochs left");
+                    epochCounter = 0;
+                    for (int j = 0; j < outputs.Count; j++) {
+                        Debug.Log(layers[layers.Count - 1].GetNeurons()[j].GetName() + ": " + outputs[j]);
+                    }
+                    return true;
+                } else {
+                    Debug.Log(epochsForStep + " epochs completed. " + (epochs - epochCounter) + " epochs left");
+                    return false;
+                }
+            } else {
+                for (int i = 0; i < epochs; i++) {                                                                  //Run through all the epochs in one frame
+                    for (int j = 0; j < inputs[0].Count; j++) {                                                         //Run through all the training data
+                        for (int k = 0; k < layers[0].GetNeurons().Count; k++) {
+                            layers[0].PassDataToNeuron(k, inputs[k][j]);                                                        //Pass information to the input neurons
+                        }
+                        for (int k = 0; k < layers[layers.Count - 1].GetNeurons().Count; k++) {
+                            layers[layers.Count - 1].PassDataToNeuron(k, desiredOutputs[k][j]);                                 //Pass desiredOutputs to the output neurons
+                        }
+                        trainingIndex = j;                                                                                  //Set trainingIndex to i, so it can be used for backpropagation
+                        CalculateOutput();
+                        Backpropagation();
+                    }
+                }
+                for (int j = 0; j < outputs.Count; j++) {
+                    Debug.Log(layers[layers.Count - 1].GetNeurons()[j].GetName() + ": " + outputs[j]);
+                }
+                return true;
             }
-            for (int j = 0; j < outputs.Count; j++) {
-                Debug.Log(outputs[j]);
-            }
-            return true;
         }
     }
 
@@ -135,10 +164,6 @@ public class FeedForwardArtificialNeuralNetwork {
         }
 
         CalculateOutput();
-
-        for (int i = 0; i < outputs.Count; i++) {
-            Debug.Log(outputs[i]);
-        } 
 
         if (outputs.Count > 0) {                                                                            //If outputs count is greater than 0, it means the outputs were properly calculated
             double max = -1;
@@ -205,7 +230,6 @@ public class FeedForwardArtificialNeuralNetwork {
                 layers[outputLayer].GetNeurons()[i].GetOutput()) * error);
             //Update the neuron's weights
             for (int j = 0; j < layers[outputLayer].GetNeurons()[i].GetWeights().Count; j++) {
-                Debug.Log(layers[outputLayer].GetNeurons()[i]);
                 layers[outputLayer].GetNeurons()[i].GetWeights()[j] += alpha * layers[outputLayer].GetNeurons()[i].GetInputs()[j] * error;
             }
             //Update the neuron's bias
@@ -217,7 +241,6 @@ public class FeedForwardArtificialNeuralNetwork {
                 //Calculate the errorGradientSum for the previous layer
                 double errorGradientSum = 0;
                 for (int k = 0; k < layers[i + 1].GetNeurons().Count; k++) {
-                    Debug.Log(layers[i + 1].GetNeurons()[k].GetWeights()[j]);
                     errorGradientSum += layers[i + 1].GetNeurons()[k].GetErrorGradient() * layers[i + 1].GetNeurons()[k].GetWeights()[j];
                 }
                 //Calculate the errorGradient for the neuron (used for the errorGradientSum in the hidden layer to follow)

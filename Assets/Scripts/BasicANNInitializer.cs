@@ -14,14 +14,8 @@ public class BasicANNInitializer : MonoBehaviour {
     [SerializeField] private double alpha = 0.05;
     [SerializeField] private int numberOfHiddenLayers = 0;
     [SerializeField] private int numberOfHiddenNeurons = 4;
-    [SerializeField] private bool isDelayingExecution = false;
-    [SerializeField] private float delay = 1;
-    [SerializeField] private int epochSteps = 1;
-    [SerializeField] private int currentEpoch = 0;
-    private float delayCounter = 0;
     private int outputNeuronFiring = 0;
-
-    public bool isWorking = false;
+    private bool isWorking = false;
     private float workingCounter = 0;
 
     [Header("Inputs & Desired Outputs")]
@@ -32,12 +26,25 @@ public class BasicANNInitializer : MonoBehaviour {
     [SerializeField] private ActivationFunctions hiddenLayerActivationFunction = ActivationFunctions.Sigmoid;
     [SerializeField] private ActivationFunctions outputLayerActivationFunction = ActivationFunctions.Sigmoid;
 
+    [Header("Multi-frame Training (hover 'epochSteps')")]
+    [Tooltip("This will split the epochs into multiple steps (frames) during training: " +
+        "1000 epochs, 100 per step = 10 steps/frames of 100 epochs. If the last step exceeds the number " +
+        "of epochs, it will automatically stop: 1000 epochs, 800 per step = 1 frame " +
+        "of 800 epochs, 1 frame of 200 epochs")]
+    [SerializeField] private int epochSteps = 1;
+
     [Header("Visualization")]
     [SerializeField] private bool isVisualizingANN = false;
     [SerializeField] private ANNVisualizationHandler visualizationHandler = null;
+    [Tooltip("Activating this delay will make the ANN ignore the Multi-frame settings, since this " +
+        "will visualize each epoch!")]
+    [SerializeField] private bool isDelayingExecution = false;
+    [SerializeField] private float delay = 1;
+    private float delayCounter = 0;
 
     private bool isCalculating = false;
     private bool isTraining = false;
+    private DateTime start;
 
     void OnValidate() {
         epochs = epochs <= 0 ? 1 : epochs;
@@ -46,7 +53,7 @@ public class BasicANNInitializer : MonoBehaviour {
         numberOfHiddenNeurons = numberOfHiddenNeurons < 2 ? 2 : numberOfHiddenNeurons;
         isDelayingExecution = isVisualizingANN ? isDelayingExecution : false;
         delay = isDelayingExecution && delay <= 0 ? 0.5f : delay;
-        epochSteps = isDelayingExecution ? epochSteps : epochs;
+        epochSteps = epochSteps < epochs && epochSteps > 0 ? epochSteps : 0;
     }
 
     public void CreateANN() {
@@ -64,7 +71,6 @@ public class BasicANNInitializer : MonoBehaviour {
                 Debug.LogError(e);
             }
         }
-        FFANN.Train();
     }
 
     public void PassData(List<List<double>> inputs, List<List<double>> desiredOutputs, bool passOnToCurrentANN = false) {
@@ -77,6 +83,7 @@ public class BasicANNInitializer : MonoBehaviour {
     }
 
     public void Run(bool isTraining) {
+        start = DateTime.Now;
         this.isTraining = isTraining;
         isCalculating = !isTraining;
     }
@@ -94,38 +101,33 @@ public class BasicANNInitializer : MonoBehaviour {
                     delayCounter = 0;
                     if (isCalculating) {
                         outputNeuronFiring = FFANN.Run();
-                        if (outputNeuronFiring != -1) {
-                            isCalculating = false;
-                        }
+                        if (outputNeuronFiring != -1) isCalculating = false;
                     } else if (isTraining) {
                         bool isDone = FFANN.Train();
-                        if (isDone) {
-                            isTraining = false;
-                        } else {
-                            currentEpoch = FFANN.GetCurrentEpoch();
-                        }
+                        if (isDone) isTraining = false;
                     }
                 }
             } else {
-                delayCounter = 0;
                 if (isCalculating) {
                     outputNeuronFiring = FFANN.Run();
-                    if (outputNeuronFiring != -1) {
-                        isCalculating = false;
-                    }
+                    Debug.Log("Neuron Firing: " + outputNeuronFiring);
+                    if (outputNeuronFiring != -1) isCalculating = false;
                 } else if (isTraining) {
-                    bool isDone = FFANN.Train();
+                    bool isDone = FFANN.Train(epochSteps);
                     if (isDone) {
                         isTraining = false;
+                        Debug.Log("Total runs (epocs x inputs): " + (epochs * inputs[0].Count));
+                        Debug.Log("Time spent training: " + (DateTime.Now.TimeOfDay - start.TimeOfDay) + "min");
                     }
                 }
             }
-        }
-        if (isWorking) {
-            workingCounter += Time.deltaTime;
-            if (workingCounter > 0.1f) {
-                workingCounter = 0;
-                isWorking = false;
+        } else {
+            if (isWorking) {
+                workingCounter += Time.deltaTime;
+                if (workingCounter > 0.01f) {
+                    workingCounter = 0;
+                    isWorking = false;
+                }
             }
         }
     }
@@ -133,4 +135,6 @@ public class BasicANNInitializer : MonoBehaviour {
     public int GetFiringOutputNeuron() { return outputNeuronFiring; }
 
     public bool GetIsVisualizing() { return isVisualizingANN; }
+
+    public bool IsReadyForRun() { return !isWorking; }
 }

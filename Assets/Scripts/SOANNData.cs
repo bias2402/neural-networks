@@ -39,12 +39,6 @@ public class SOANNData : ScriptableObject {
                     dist0[i] == dist0[j] &&
                     dist45[i] == dist45[j] &&
                     dist215[i] == dist215[j]) {
-                    Debug.Log(hit0[i] + " " + hit0[j]);
-                    Debug.Log(hit45[i] + " " + hit45[j]);
-                    Debug.Log(hit215[i] + " " + hit215[j]);
-                    Debug.Log(dist0[i] + " " + dist0[j]);
-                    Debug.Log(dist45[i] + " " + dist45[j]);
-                    Debug.Log(dist215[i] + " " + dist215[j]);
 
                     hit0.RemoveAt(j);
                     hit45.RemoveAt(j);
@@ -77,9 +71,9 @@ public class SOANNData : ScriptableObject {
         inputs.Add(new List<double>(hit0));
         inputs.Add(new List<double>(hit45));
         inputs.Add(new List<double>(hit215));
-        inputs.Add(new List<double>(dist0));
-        inputs.Add(new List<double>(dist45));
-        inputs.Add(new List<double>(dist215));
+        //inputs.Add(new List<double>(dist0));
+        //inputs.Add(new List<double>(dist45));
+        //inputs.Add(new List<double>(dist215));
         return inputs;
     }
 

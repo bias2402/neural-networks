@@ -5,17 +5,13 @@ using UnityEngine;
 public class AgentExampleControls : MonoBehaviour {
     [SerializeField] private bool isAIAgent = false;
     [SerializeField] private BasicANNInitializer ANNInitializer = null;
-    [SerializeField] private Transform camTrans = null;
     [SerializeField] private SOANNData trainingData;
     [SerializeField] private SOANNData liveData;
     [SerializeField] private int rayLength = 5;
+    [SerializeField] private GameObject ANNView = null;
     private bool isRecievingInput = false;
     private double forward = 0;
     private double turn = 0;
-
-    void Start() {
-        if (camTrans == null) camTrans = Camera.main.transform;
-    }
 
     void Update() {
         if (!isAIAgent) {
@@ -42,10 +38,7 @@ public class AgentExampleControls : MonoBehaviour {
             }
 
             if (Input.GetKeyDown(KeyCode.Space)) {
-                if (ANNInitializer.GetIsVisualizing()) {
-                    camTrans.position = new Vector3(0, 0, -425);
-                    camTrans.rotation = Quaternion.Euler(0, 0, 0);
-                }
+                if (ANNInitializer.GetIsVisualizing()) ANNView.SetActive(true);
                 ANNInitializer.CreateANN();
                 ANNInitializer.Run(true);
             }
@@ -54,9 +47,11 @@ public class AgentExampleControls : MonoBehaviour {
 
             if (Input.GetKeyDown(KeyCode.N)) trainingData.ClearData();
 
+            if (Input.GetKeyDown(KeyCode.I)) isAIAgent = true;
+
             if (isRecievingInput) RecordData();
         } else {
-            if (!ANNInitializer.isWorking) {
+            if (ANNInitializer.IsReadyForRun()) {
                 liveData.ClearData();
                 RecordData();
 
@@ -81,9 +76,9 @@ public class AgentExampleControls : MonoBehaviour {
                 Turn();
             }
         }
-        Debug.DrawRay(transform.position + Vector3.up * 0.5f, transform.forward * rayLength);
-        Debug.DrawRay(transform.position + Vector3.up * 0.5f, (transform.forward + transform.right) * rayLength);
-        Debug.DrawRay(transform.position + Vector3.up * 0.5f, (transform.forward - transform.right) * rayLength);
+        Debug.DrawRay(transform.position + Vector3.down * 0.5f, transform.forward * rayLength);
+        Debug.DrawRay(transform.position + Vector3.down * 0.5f, (transform.forward + transform.right) * rayLength);
+        Debug.DrawRay(transform.position + Vector3.down * 0.5f, (transform.forward - transform.right) * rayLength);
     }
 
     RaycastHit Raycast(Vector3 direction) {

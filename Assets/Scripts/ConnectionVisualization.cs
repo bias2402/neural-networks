@@ -9,7 +9,7 @@ using System;
 public class ConnectionVisualization : MonoBehaviour {
     [SerializeField] private LineRenderer lineRenderer = null;
     [SerializeField] private Shader lineMat = null;
-    private Vector3[] positions = new Vector3[2];
+    [SerializeField] private Vector3[] positions = new Vector3[2];
 
     public void Init(Vector3 start, Vector3 end) {
         lineRenderer.positionCount = 2;

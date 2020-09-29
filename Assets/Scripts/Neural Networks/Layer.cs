@@ -12,10 +12,10 @@ public class Layer {
     public List<Neuron> GetNeurons() { return neurons; }
     #endregion
 
-    public Layer(int numberOfNeuronsForLayer, int numberOfInputs = -1) {                                    //Input layer
+    public Layer(int numberOfNeuronsForLayer, Layer prevLayer) {
         for (int i = 0; i < numberOfNeuronsForLayer; i++) {
-            if (numberOfInputs != -1) neurons.Add(new Neuron(numberOfInputs));
-            else neurons.Add(new Neuron());
+            if (prevLayer != null) neurons.Add(new Neuron(prevLayer.GetNeurons().Count));                       //Create a hidden or output layer
+            else neurons.Add(new Neuron());                                                                     //Create an input layer
         }
     }
 
