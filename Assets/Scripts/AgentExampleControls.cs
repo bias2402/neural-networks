@@ -58,19 +58,21 @@ public class AgentExampleControls : MonoBehaviour {
                 ANNInitializer.PassData(liveData.CreateInputs(), liveData.CreateDesiredOutputs(), true);
                 ANNInitializer.Run(false);
 
-                switch (ANNInitializer.GetFiringOutputNeuron()) {
-                    case 0:
-                        forward = 10 * Time.deltaTime;
-                        turn = 0;
-                        break;
-                    case 1:
-                        forward = 0;
-                        turn = -150 * Time.deltaTime;
-                        break;
-                    case 2:
-                        forward = 0;
-                        turn = 150 * Time.deltaTime;
-                        break;
+                foreach (int i in ANNInitializer.GetFiringOutputNeurons()) {
+                    switch (i) {
+                        case 0:
+                            forward = 10 * Time.deltaTime;
+                            turn = 0;
+                            break;
+                        case 1:
+                            forward = 0;
+                            turn = -150 * Time.deltaTime;
+                            break;
+                        case 2:
+                            forward = 0;
+                            turn = 150 * Time.deltaTime;
+                            break;
+                    }
                 }
                 Walk();
                 Turn();

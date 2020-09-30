@@ -14,7 +14,11 @@ public class BasicANNInitializer : MonoBehaviour {
     [SerializeField] private double alpha = 0.05;
     [SerializeField] private int numberOfHiddenLayers = 0;
     [SerializeField] private int numberOfHiddenNeurons = 4;
-    private int outputNeuronFiring = 0;
+    [Tooltip("If this is true, only the highest output is triggered (Discrete Activation). " +
+        "If this is false, all outputs are read and those above a certain breakpoint will trigger (Continuous Activation)")]
+    [SerializeField] private bool isUsingDiscreteActivation = false;
+    [SerializeField] private float triggerPoint = 0.25f;
+    private List<int> outputNeuronsFiring = new List<int>();
     private bool isWorking = false;
     private float workingCounter = 0;
 
@@ -54,6 +58,7 @@ public class BasicANNInitializer : MonoBehaviour {
         isDelayingExecution = isVisualizingANN ? isDelayingExecution : false;
         delay = isDelayingExecution && delay <= 0 ? 0.5f : delay;
         epochSteps = epochSteps < epochs && epochSteps > 0 ? epochSteps : 0;
+        triggerPoint = triggerPoint > 1 || triggerPoint < 0 ? 0.25f : triggerPoint;
     }
 
     public void CreateANN() {
@@ -100,8 +105,10 @@ public class BasicANNInitializer : MonoBehaviour {
                 } else {
                     delayCounter = 0;
                     if (isCalculating) {
-                        outputNeuronFiring = FFANN.Run();
-                        if (outputNeuronFiring != -1) isCalculating = false;
+                        bool isDone = FFANN.Run();
+                        if (isDone) {
+                            isCalculating = false;
+                        }
                     } else if (isTraining) {
                         bool isDone = FFANN.Train();
                         if (isDone) isTraining = false;
@@ -109,9 +116,22 @@ public class BasicANNInitializer : MonoBehaviour {
                 }
             } else {
                 if (isCalculating) {
-                    outputNeuronFiring = FFANN.Run();
-                    Debug.Log("Neuron Firing: " + outputNeuronFiring);
-                    if (outputNeuronFiring != -1) isCalculating = false;
+                    bool isDone = FFANN.Run();
+                    if (isDone) {
+                        if (isUsingDiscreteActivation) {
+                            outputNeuronsFiring.Clear();
+                            outputNeuronsFiring.Add(FFANN.GetMaxOutput());
+                        } else {
+                            outputNeuronsFiring.Clear();
+                            List<double> outputs = FFANN.GetOutputs();
+                            for (int i = 0; i < outputs.Count; i++) {
+                                if (outputs[i] >= triggerPoint) {
+                                    outputNeuronsFiring.Add(i);
+                                }
+                            }
+                        }
+                        isCalculating = false;
+                    }
                 } else if (isTraining) {
                     bool isDone = FFANN.Train(epochSteps);
                     if (isDone) {
@@ -132,7 +152,7 @@ public class BasicANNInitializer : MonoBehaviour {
         }
     }
 
-    public int GetFiringOutputNeuron() { return outputNeuronFiring; }
+    public List<int> GetFiringOutputNeurons() { return outputNeuronsFiring; }
 
     public bool GetIsVisualizing() { return isVisualizingANN; }
 

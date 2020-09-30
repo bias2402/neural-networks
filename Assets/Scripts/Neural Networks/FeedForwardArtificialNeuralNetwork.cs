@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 public enum ActivationFunctions { ReLU, Sigmoid, TanH }
 [Serializable]
@@ -26,6 +27,20 @@ public class FeedForwardArtificialNeuralNetwork {
     public List<Layer> GetLayers() { return layers; }
 
     public int GetCurrentEpoch() { return epochCounter; }
+
+    public int GetMaxOutput() {
+        double max = -1;
+        int index = -1;
+        for (int i = 0; i < outputs.Count; i++) {
+            if (outputs[i] > max) {
+                max = outputs[i];
+                index = i;
+            }
+        }
+        return index;
+    }
+
+    public List<double> GetOutputs() { return outputs; }
     #endregion
 
     public FeedForwardArtificialNeuralNetwork(int epochs, double alpha, int numberOfHiddenLayers, int numberOfHiddenNeuronsPerHiddenLayer, List<List<double>> inputs,
@@ -156,7 +171,7 @@ public class FeedForwardArtificialNeuralNetwork {
         }
     }
 
-    public int Run() {
+    public bool Run() {
         if (layerIndex == 0) outputs.Clear();                                                               //Clear the outputs if layer index equals 0, to assure the list is cleared
 
         for (int i = 0; i < layers[0].GetNeurons().Count; i++) {
@@ -165,19 +180,8 @@ public class FeedForwardArtificialNeuralNetwork {
 
         CalculateOutput();
 
-        if (outputs.Count > 0) {                                                                            //If outputs count is greater than 0, it means the outputs were properly calculated
-            double max = -1;
-            int neuronIndex = 0;
-            for (int i = 0; i < outputs.Count; i++) {
-                if (outputs[i] > max) {                                                                             //Find the best output, which is the neuron that should decide the action
-                    max = outputs[i];
-                    neuronIndex = i;
-                }
-            }
-            return neuronIndex;
-        } else {
-            return -1;
-        }
+        if (outputs.Count > 0) return true;                                                                 //If outputs count is greater than 0, it means the outputs were properly calculated
+        else return false;
     }
 
     public void Reset() {
