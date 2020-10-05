@@ -7,7 +7,7 @@ public class AgentExampleControls : MonoBehaviour {
     [SerializeField] private BasicANNInitializer ANNInitializer = null;
     [SerializeField] private SOANNData trainingData;
     [SerializeField] private SOANNData liveData;
-    [SerializeField] private int rayLength = 5;
+    [SerializeField] private float rayLength = 5;
     [SerializeField] private GameObject ANNView = null;
     private bool isRecievingInput = false;
     private double forward = 0;
