@@ -5,6 +5,9 @@ using System;
 
 [Serializable]
 public class Neuron {
+    public delegate void NeuronVisualUpdate();
+    public NeuronVisualUpdate neuronVisualUpdate;
+
     [Header("Neuron Settings")]
     [SerializeField] private bool isInputNeuron = false;
     [SerializeField] private double inputValue = 0;
@@ -14,10 +17,6 @@ public class Neuron {
     [SerializeField] private double output = 0;
     [SerializeField] private double errorGradient = 0;
     [SerializeField] private string name = "";
-
-    [Header("Visualization")]
-    [SerializeField] private bool isVisualizing = false;
-    [SerializeField] private NeuronVisualization neuronVisualization = null;
 
     [SerializeField] private ActivationFunctions activationFunction = ActivationFunctions.Sigmoid;
 
@@ -65,11 +64,7 @@ public class Neuron {
     public void CalculateOutput(Layer layer = null) {
         if (isInputNeuron) {                                                                                //If the neuron is an input neuron, set its output to input
             output = inputValue;
-
-            if (isVisualizing) {
-                neuronVisualization.UpdateNeuronImage((float)output);
-                neuronVisualization.UpdateConnection((float)output);
-            }
+            neuronVisualUpdate();
             return;
         }
         inputs.Clear();
@@ -85,23 +80,6 @@ public class Neuron {
         }
         value -= bias;                                                                                      //Subtract the bias to apply the bias of the neuron
         output = ActivationFunctionHandler.TriggerActivationFunction(activationFunction, value);            //Throw the output through the chosen activation function to calculate the final output
-
-        if (isVisualizing) {
-            neuronVisualization.UpdateNeuronImage((float)output);
-            neuronVisualization.UpdateConnection((float)output);
-        }
-    }
-
-    public void SetupNeuronVisualization(NeuronVisualization neuronVisualization) {
-        this.neuronVisualization = neuronVisualization;
-        if (neuronVisualization != null) isVisualizing = true;
-    }
-
-    public void NeuronIsWorking() { 
-        if (neuronVisualization != null) neuronVisualization.NeuronWorking();                               //If the neuron has a neuronVisualization, call its NeuronWorking method
-    }
-
-    public void ResetVisualNeuronColor() {
-        if (neuronVisualization != null) neuronVisualization.ResetNeuronColor();                            //If the neuron has a neuronVisualization, call its ResetNeuronColor method
+        neuronVisualUpdate();
     }
 }

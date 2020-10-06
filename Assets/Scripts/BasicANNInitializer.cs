@@ -46,6 +46,10 @@ public class BasicANNInitializer : MonoBehaviour {
     [SerializeField] private float delay = 1;
     private float delayCounter = 0;
 
+    [Header("Multi-Threading")]
+    [SerializeField] private bool isMultiThreading = false;
+    [SerializeField] private int threadCount = 0;
+
     private bool isCalculating = false;
     private bool isTraining = false;
     private DateTime start;
@@ -98,7 +102,6 @@ public class BasicANNInitializer : MonoBehaviour {
             isWorking = true;
             if (isDelayingExecution) {
                 if (delayCounter == 0) {
-                    FFANN.SetNextLayerAsWorking();
                     delayCounter += Time.deltaTime;
                 } else if (delayCounter < delay) {
                     delayCounter += Time.deltaTime;
@@ -133,11 +136,20 @@ public class BasicANNInitializer : MonoBehaviour {
                         isCalculating = false;
                     }
                 } else if (isTraining) {
-                    bool isDone = FFANN.Train(epochSteps);
-                    if (isDone) {
-                        isTraining = false;
-                        Debug.Log("Total runs (epocs x inputs): " + (epochs * inputs[0].Count));
-                        Debug.Log("Time spent training: " + (DateTime.Now.TimeOfDay - start.TimeOfDay) + "min");
+                    if (isMultiThreading) {
+                        bool isDone = FFANN.MultiThreadTraining(threadCount, epochSteps);
+                        if (isDone) {
+                            isTraining = false;
+                            Debug.Log("Total runs (epocs x inputs): " + (epochs * inputs[0].Count));
+                            Debug.Log("Time spent training: " + (DateTime.Now.TimeOfDay - start.TimeOfDay) + "min");
+                        }
+                    } else {
+                        bool isDone = FFANN.Train(epochSteps);
+                        if (isDone) {
+                            isTraining = false;
+                            Debug.Log("Total runs (epocs x inputs): " + (epochs * inputs[0].Count));
+                            Debug.Log("Time spent training: " + (DateTime.Now.TimeOfDay - start.TimeOfDay) + "min");
+                        }
                     }
                 }
             }
@@ -157,4 +169,8 @@ public class BasicANNInitializer : MonoBehaviour {
     public bool GetIsVisualizing() { return isVisualizingANN; }
 
     public bool IsReadyForRun() { return !isWorking; }
+
+    private void OnApplicationQuit() {
+
+    }
 }

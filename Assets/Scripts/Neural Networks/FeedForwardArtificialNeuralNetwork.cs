@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using System.Linq;
+using System.Threading;
 
 public enum ActivationFunctions { ReLU, Sigmoid, TanH }
 [Serializable]
@@ -21,6 +21,8 @@ public class FeedForwardArtificialNeuralNetwork {
     [SerializeField] private int layerIndex = 0;
     [SerializeField] private int epochCounter = 0;
     [SerializeField] private int trainingIndex = 0;
+    private Thread mainThread = null;
+    private bool isUsingMultiThreading = false;
 
     //Get & Set methods
     #region
@@ -184,20 +186,6 @@ public class FeedForwardArtificialNeuralNetwork {
         else return false;
     }
 
-    public void Reset() {
-        for (int i = 0; i < layers.Count; i++) {
-            for (int j = 0; j < layers[i].GetNeurons().Count; j++) {
-                layers[i].GetNeurons()[j].ResetVisualNeuronColor();                                                 //Reset the colors of the visual neurons
-            }
-        }
-    }
-
-    public void SetNextLayerAsWorking() {
-        foreach (Neuron n in layers[layerIndex].GetNeurons()) {
-            n.NeuronIsWorking();                                                                                //Call for an update of the visual neurons in the next layer
-        }
-    }
-
     void CalculateOutput() {
         if (isDelaying) {                                                                                   //If the execution is delayed
             if (layerIndex == 0) outputs.Clear();                                                               //If the layer equals 0, reset outputs just in case
@@ -258,5 +246,35 @@ public class FeedForwardArtificialNeuralNetwork {
                 layers[i].GetNeurons()[j].SetBias(alpha * -1 * layers[i].GetNeurons()[j].GetErrorGradient());
             }
         }
+    }
+
+    public bool MultiThreadTraining(int numberOfThreads, int epochSteps = 0) {
+        mainThread = Thread.CurrentThread;
+        isUsingMultiThreading = true;
+        ThreadStart threadStart = new ThreadStart(delegate { Train(epochSteps / numberOfThreads); });
+        List<Thread> threads = new List<Thread>();
+        List<bool> threadCompletion = new List<bool>();
+        for (int i = 0; i < numberOfThreads; i++) {
+            threads.Add(new Thread(threadStart));
+            threadCompletion.Add(false);
+            threads[i].Start();
+        }
+        bool isDone = false;
+        int whileRuns = 0;
+        while (!isDone) {
+            Debug.Log("Running while-loop");
+            for (int i = 0; i < threads.Count; i++) {
+                if (threads[i].IsAlive) break;
+                else if (i == threads.Count - 1 && !threads[i].IsAlive) isDone = true;
+            }
+            whileRuns++;
+            if (whileRuns > 1000) {
+                Debug.LogError("Terminated while-loop automatically!");
+                isDone = true;
+            }
+        }
+        isUsingMultiThreading = false;
+        if (epochCounter == epochs) return true;
+        else return false;
     }
 }

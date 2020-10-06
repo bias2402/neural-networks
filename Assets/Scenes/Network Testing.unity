@@ -1684,6 +1684,8 @@ MonoBehaviour:
   alpha: 0.05
   numberOfHiddenLayers: 2
   numberOfHiddenNeurons: 4
+  isUsingDiscreteActivation: 0
+  triggerPoint: 0.25
   hiddenLayerActivationFunction: 1
   outputLayerActivationFunction: 1
   epochSteps: 100
@@ -1691,6 +1693,8 @@ MonoBehaviour:
   visualizationHandler: {fileID: 749837067}
   isDelayingExecution: 0
   delay: 0.001
+  isMultiThreading: 0
+  threadCount: 2
 --- !u!4 &1405823759
 Transform:
   m_ObjectHideFlags: 0
