@@ -55,12 +55,10 @@ public class Neuron {
             Debug.LogError("A neuron must have a positive number of inputs!");
             return;
         }
-        bias = 0;
-        //bias = UnityEngine.Random.Range(-1f, 1f);                                                           //Randomize the start bias
+        bias = UnityEngine.Random.Range(-1f, 1f);                                                           //Randomize the start bias
         for (int i = 0; i < numberOfInputs; i++) {
             inputs.Add(0);                                                                                      //Add an input for each number of inputs
-            weights.Add(0);
-            //weights.Add(UnityEngine.Random.Range(-1f, 1f));                                                     //Add a weight for each number of inputs and randomize the start value
+            weights.Add(UnityEngine.Random.Range(-1f, 1f));                                                     //Add a weight for each number of inputs and randomize the start value
         }
     }
 
