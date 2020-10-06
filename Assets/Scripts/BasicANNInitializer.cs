@@ -46,10 +46,6 @@ public class BasicANNInitializer : MonoBehaviour {
     [SerializeField] private float delay = 1;
     private float delayCounter = 0;
 
-    [Header("Multi-Threading")]
-    [SerializeField] private bool isMultiThreading = false;
-    [SerializeField] private int threadCount = 0;
-
     private bool isCalculating = false;
     private bool isTraining = false;
     private DateTime start;
@@ -143,20 +139,11 @@ public class BasicANNInitializer : MonoBehaviour {
                         }
                     }
                 } else if (isTraining) {
-                    if (isMultiThreading) {
-                        bool isDone = FFANN.CreateMultipleThreadsForTraining(threadCount, epochSteps);
-                        if (isDone) {
-                            isTraining = false;
-                            Debug.Log("Total runs (epocs x inputs): " + (epochs * inputs[0].Count));
-                            Debug.Log("Time spent training: " + (DateTime.Now.TimeOfDay - start.TimeOfDay) + "min");
-                        }
-                    } else {
-                        bool isDone = FFANN.Train(epochSteps);
-                        if (isDone) {
-                            isTraining = false;
-                            Debug.Log("Total runs (epocs x inputs): " + (epochs * inputs[0].Count));
-                            Debug.Log("Time spent training: " + (DateTime.Now.TimeOfDay - start.TimeOfDay) + "min");
-                        }
+                    bool isDone = FFANN.Train(epochSteps);
+                    if (isDone) {
+                        isTraining = false;
+                        Debug.Log("Total runs (epocs x inputs): " + (epochs * inputs[0].Count));
+                        Debug.Log("Time spent training: " + (DateTime.Now.TimeOfDay - start.TimeOfDay) + "min");
                     }
                     if (isVisualizingANN) {
                         for (int i = 0; i < FFANN.GetLayers().Count; i++) {

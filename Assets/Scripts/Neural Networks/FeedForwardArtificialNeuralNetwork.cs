@@ -247,41 +247,4 @@ public class FeedForwardArtificialNeuralNetwork {
             }
         }
     }
-
-    public bool CreateMultipleThreadsForTraining(int numberOfThreads, int epochSteps = 0) {
-        mainThread = Thread.CurrentThread;
-        isUsingMultiThreading = true;
-
-        List<List<Layer>> subThreadResults = new List<List<Layer>>();
-        ThreadStart threadStart = new ThreadStart(delegate { 
-            MultiThreadTraining();
-        });
-
-        List<Thread> threads = new List<Thread>();
-        List<bool> threadCompletion = new List<bool>();
-        for (int i = 0; i < numberOfThreads; i++) {
-            threads.Add(new Thread(threadStart));
-            threadCompletion.Add(false);
-            threads[i].Start();
-        }
-        for (int i = 0; i < threads.Count; i++) {
-            threads[i].Join();
-        }
-        Debug.Log(subThreadResults.Count);
-
-        epochCounter += epochSteps;
-        epochCounter = epochCounter > epochs ? epochs : epochCounter;
-
-        isUsingMultiThreading = false;
-        if (epochCounter == epochs) {
-            for (int j = 0; j < outputs.Count; j++) {
-                Debug.Log(layers[layers.Count - 1].GetNeurons()[j].GetName() + ": " + outputs[j]);
-            }
-            return true;
-        } else return false;
-    }
-
-    void MultiThreadTraining() {
-        
-    }
 }
