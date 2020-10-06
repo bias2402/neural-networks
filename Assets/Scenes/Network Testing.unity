@@ -1688,13 +1688,13 @@ MonoBehaviour:
   triggerPoint: 0.25
   hiddenLayerActivationFunction: 1
   outputLayerActivationFunction: 1
-  epochSteps: 100
+  epochSteps: 0
   isVisualizingANN: 1
   visualizationHandler: {fileID: 749837067}
   isDelayingExecution: 0
   delay: 0.001
-  isMultiThreading: 0
-  threadCount: 2
+  isMultiThreading: 1
+  threadCount: 4
 --- !u!4 &1405823759
 Transform:
   m_ObjectHideFlags: 0

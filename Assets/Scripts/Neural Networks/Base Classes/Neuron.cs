@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Threading;
 
 [Serializable]
 public class Neuron {
@@ -54,17 +55,18 @@ public class Neuron {
             Debug.LogError("A neuron must have a positive number of inputs!");
             return;
         }
-        bias = UnityEngine.Random.Range(-1f, 1f);                                                           //Randomize the start bias
+        bias = 0;
+        //bias = UnityEngine.Random.Range(-1f, 1f);                                                           //Randomize the start bias
         for (int i = 0; i < numberOfInputs; i++) {
             inputs.Add(0);                                                                                      //Add an input for each number of inputs
-            weights.Add(UnityEngine.Random.Range(-1f, 1f));                                                     //Add a weight for each number of inputs and randomize the start value
+            weights.Add(0);
+            //weights.Add(UnityEngine.Random.Range(-1f, 1f));                                                     //Add a weight for each number of inputs and randomize the start value
         }
     }
 
     public void CalculateOutput(Layer layer = null) {
         if (isInputNeuron) {                                                                                //If the neuron is an input neuron, set its output to input
             output = inputValue;
-            neuronVisualUpdate();
             return;
         }
         inputs.Clear();
@@ -80,6 +82,9 @@ public class Neuron {
         }
         value -= bias;                                                                                      //Subtract the bias to apply the bias of the neuron
         output = ActivationFunctionHandler.TriggerActivationFunction(activationFunction, value);            //Throw the output through the chosen activation function to calculate the final output
+    }
+
+    public void CallNeuronVisualUpdateEvent() {
         neuronVisualUpdate();
     }
 }

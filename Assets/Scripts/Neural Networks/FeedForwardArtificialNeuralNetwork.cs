@@ -21,7 +21,7 @@ public class FeedForwardArtificialNeuralNetwork {
     [SerializeField] private int layerIndex = 0;
     [SerializeField] private int epochCounter = 0;
     [SerializeField] private int trainingIndex = 0;
-    private Thread mainThread = null;
+    public Thread mainThread { get; internal set; } = null;
     private bool isUsingMultiThreading = false;
 
     //Get & Set methods
@@ -65,7 +65,7 @@ public class FeedForwardArtificialNeuralNetwork {
 
         //Hidden layers
         for (int i = 0; i < numberOfHiddenLayers; i++) {
-            layers.Add(new Layer(numberOfHiddenNeurons, layers[layers.Count - 1]));                         //Create a new hidden layers
+            layers.Add(new Layer(numberOfHiddenNeurons, layers[layers.Count - 1]));                             //Create a new hidden layers
         }
 
         //Output layer
@@ -125,7 +125,7 @@ public class FeedForwardArtificialNeuralNetwork {
             }
         } else {                                                                                            //If the execution isn't delayed
             if (epochsForStep > 0) {
-                for (int i = 0; i < epochsForStep; i++) {                                                           //Run through all the epochs in one frame
+                for (int i = 0; i < epochsForStep; i++) {                                                           //Run through some of the epochs in one frame
                     if (epochCounter >= epochs) break;
                     for (int j = 0; j < inputs[0].Count; j++) {                                                         //Run through all the training data
                         for (int k = 0; k < layers[0].GetNeurons().Count; k++) {
@@ -248,10 +248,15 @@ public class FeedForwardArtificialNeuralNetwork {
         }
     }
 
-    public bool MultiThreadTraining(int numberOfThreads, int epochSteps = 0) {
+    public bool CreateMultipleThreadsForTraining(int numberOfThreads, int epochSteps = 0) {
         mainThread = Thread.CurrentThread;
         isUsingMultiThreading = true;
-        ThreadStart threadStart = new ThreadStart(delegate { Train(epochSteps / numberOfThreads); });
+
+        List<List<Layer>> subThreadResults = new List<List<Layer>>();
+        ThreadStart threadStart = new ThreadStart(delegate { 
+            MultiThreadTraining();
+        });
+
         List<Thread> threads = new List<Thread>();
         List<bool> threadCompletion = new List<bool>();
         for (int i = 0; i < numberOfThreads; i++) {
@@ -259,22 +264,24 @@ public class FeedForwardArtificialNeuralNetwork {
             threadCompletion.Add(false);
             threads[i].Start();
         }
-        bool isDone = false;
-        int whileRuns = 0;
-        while (!isDone) {
-            Debug.Log("Running while-loop");
-            for (int i = 0; i < threads.Count; i++) {
-                if (threads[i].IsAlive) break;
-                else if (i == threads.Count - 1 && !threads[i].IsAlive) isDone = true;
-            }
-            whileRuns++;
-            if (whileRuns > 1000) {
-                Debug.LogError("Terminated while-loop automatically!");
-                isDone = true;
-            }
+        for (int i = 0; i < threads.Count; i++) {
+            threads[i].Join();
         }
+        Debug.Log(subThreadResults.Count);
+
+        epochCounter += epochSteps;
+        epochCounter = epochCounter > epochs ? epochs : epochCounter;
+
         isUsingMultiThreading = false;
-        if (epochCounter == epochs) return true;
-        else return false;
+        if (epochCounter == epochs) {
+            for (int j = 0; j < outputs.Count; j++) {
+                Debug.Log(layers[layers.Count - 1].GetNeurons()[j].GetName() + ": " + outputs[j]);
+            }
+            return true;
+        } else return false;
+    }
+
+    void MultiThreadTraining() {
+        
     }
 }

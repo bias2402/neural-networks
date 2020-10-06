@@ -135,9 +135,16 @@ public class BasicANNInitializer : MonoBehaviour {
                         }
                         isCalculating = false;
                     }
+                    if (isVisualizingANN) {
+                        for (int i = 0; i < FFANN.GetLayers().Count; i++) {
+                            for (int j = 0; j < FFANN.GetLayers()[i].GetNeurons().Count; j++) {
+                                FFANN.GetLayers()[i].GetNeurons()[j].CallNeuronVisualUpdateEvent();
+                            }
+                        }
+                    }
                 } else if (isTraining) {
                     if (isMultiThreading) {
-                        bool isDone = FFANN.MultiThreadTraining(threadCount, epochSteps);
+                        bool isDone = FFANN.CreateMultipleThreadsForTraining(threadCount, epochSteps);
                         if (isDone) {
                             isTraining = false;
                             Debug.Log("Total runs (epocs x inputs): " + (epochs * inputs[0].Count));
@@ -149,6 +156,13 @@ public class BasicANNInitializer : MonoBehaviour {
                             isTraining = false;
                             Debug.Log("Total runs (epocs x inputs): " + (epochs * inputs[0].Count));
                             Debug.Log("Time spent training: " + (DateTime.Now.TimeOfDay - start.TimeOfDay) + "min");
+                        }
+                    }
+                    if (isVisualizingANN) {
+                        for (int i = 0; i < FFANN.GetLayers().Count; i++) {
+                            for (int j = 0; j < FFANN.GetLayers()[i].GetNeurons().Count; j++) {
+                                FFANN.GetLayers()[i].GetNeurons()[j].CallNeuronVisualUpdateEvent();
+                            }
                         }
                     }
                 }
