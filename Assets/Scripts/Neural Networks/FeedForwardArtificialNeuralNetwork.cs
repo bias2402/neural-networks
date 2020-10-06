@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using System.Linq;
+using System.Threading;
 
 public enum ActivationFunctions { ReLU, Sigmoid, TanH }
 [Serializable]
@@ -21,6 +21,8 @@ public class FeedForwardArtificialNeuralNetwork {
     [SerializeField] private int layerIndex = 0;
     [SerializeField] private int epochCounter = 0;
     [SerializeField] private int trainingIndex = 0;
+    public Thread mainThread { get; internal set; } = null;
+    private bool isUsingMultiThreading = false;
 
     //Get & Set methods
     #region
@@ -63,7 +65,7 @@ public class FeedForwardArtificialNeuralNetwork {
 
         //Hidden layers
         for (int i = 0; i < numberOfHiddenLayers; i++) {
-            layers.Add(new Layer(numberOfHiddenNeurons, layers[layers.Count - 1]));                         //Create a new hidden layers
+            layers.Add(new Layer(numberOfHiddenNeurons, layers[layers.Count - 1]));                             //Create a new hidden layers
         }
 
         //Output layer
@@ -123,7 +125,7 @@ public class FeedForwardArtificialNeuralNetwork {
             }
         } else {                                                                                            //If the execution isn't delayed
             if (epochsForStep > 0) {
-                for (int i = 0; i < epochsForStep; i++) {                                                           //Run through all the epochs in one frame
+                for (int i = 0; i < epochsForStep; i++) {                                                           //Run through some of the epochs in one frame
                     if (epochCounter >= epochs) break;
                     for (int j = 0; j < inputs[0].Count; j++) {                                                         //Run through all the training data
                         for (int k = 0; k < layers[0].GetNeurons().Count; k++) {
@@ -182,20 +184,6 @@ public class FeedForwardArtificialNeuralNetwork {
 
         if (outputs.Count > 0) return true;                                                                 //If outputs count is greater than 0, it means the outputs were properly calculated
         else return false;
-    }
-
-    public void Reset() {
-        for (int i = 0; i < layers.Count; i++) {
-            for (int j = 0; j < layers[i].GetNeurons().Count; j++) {
-                layers[i].GetNeurons()[j].ResetVisualNeuronColor();                                                 //Reset the colors of the visual neurons
-            }
-        }
-    }
-
-    public void SetNextLayerAsWorking() {
-        foreach (Neuron n in layers[layerIndex].GetNeurons()) {
-            n.NeuronIsWorking();                                                                                //Call for an update of the visual neurons in the next layer
-        }
     }
 
     void CalculateOutput() {

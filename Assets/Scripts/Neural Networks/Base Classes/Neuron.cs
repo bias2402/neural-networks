@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Threading;
 
 [Serializable]
 public class Neuron {
+    public delegate void NeuronVisualUpdate();
+    public NeuronVisualUpdate neuronVisualUpdate;
+
     [Header("Neuron Settings")]
     [SerializeField] private bool isInputNeuron = false;
     [SerializeField] private double inputValue = 0;
@@ -14,10 +18,6 @@ public class Neuron {
     [SerializeField] private double output = 0;
     [SerializeField] private double errorGradient = 0;
     [SerializeField] private string name = "";
-
-    [Header("Visualization")]
-    [SerializeField] private bool isVisualizing = false;
-    [SerializeField] private NeuronVisualization neuronVisualization = null;
 
     [SerializeField] private ActivationFunctions activationFunction = ActivationFunctions.Sigmoid;
 
@@ -55,21 +55,18 @@ public class Neuron {
             Debug.LogError("A neuron must have a positive number of inputs!");
             return;
         }
-        bias = UnityEngine.Random.Range(-1f, 1f);                                                           //Randomize the start bias
+        bias = 0;
+        //bias = UnityEngine.Random.Range(-1f, 1f);                                                           //Randomize the start bias
         for (int i = 0; i < numberOfInputs; i++) {
             inputs.Add(0);                                                                                      //Add an input for each number of inputs
-            weights.Add(UnityEngine.Random.Range(-1f, 1f));                                                     //Add a weight for each number of inputs and randomize the start value
+            weights.Add(0);
+            //weights.Add(UnityEngine.Random.Range(-1f, 1f));                                                     //Add a weight for each number of inputs and randomize the start value
         }
     }
 
     public void CalculateOutput(Layer layer = null) {
         if (isInputNeuron) {                                                                                //If the neuron is an input neuron, set its output to input
             output = inputValue;
-
-            if (isVisualizing) {
-                neuronVisualization.UpdateNeuronImage((float)output);
-                neuronVisualization.UpdateConnection((float)output);
-            }
             return;
         }
         inputs.Clear();
@@ -85,23 +82,9 @@ public class Neuron {
         }
         value -= bias;                                                                                      //Subtract the bias to apply the bias of the neuron
         output = ActivationFunctionHandler.TriggerActivationFunction(activationFunction, value);            //Throw the output through the chosen activation function to calculate the final output
-
-        if (isVisualizing) {
-            neuronVisualization.UpdateNeuronImage((float)output);
-            neuronVisualization.UpdateConnection((float)output);
-        }
     }
 
-    public void SetupNeuronVisualization(NeuronVisualization neuronVisualization) {
-        this.neuronVisualization = neuronVisualization;
-        if (neuronVisualization != null) isVisualizing = true;
-    }
-
-    public void NeuronIsWorking() { 
-        if (neuronVisualization != null) neuronVisualization.NeuronWorking();                               //If the neuron has a neuronVisualization, call its NeuronWorking method
-    }
-
-    public void ResetVisualNeuronColor() {
-        if (neuronVisualization != null) neuronVisualization.ResetNeuronColor();                            //If the neuron has a neuronVisualization, call its ResetNeuronColor method
+    public void CallNeuronVisualUpdateEvent() {
+        neuronVisualUpdate();
     }
 }

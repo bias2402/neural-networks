@@ -98,7 +98,6 @@ public class BasicANNInitializer : MonoBehaviour {
             isWorking = true;
             if (isDelayingExecution) {
                 if (delayCounter == 0) {
-                    FFANN.SetNextLayerAsWorking();
                     delayCounter += Time.deltaTime;
                 } else if (delayCounter < delay) {
                     delayCounter += Time.deltaTime;
@@ -132,12 +131,26 @@ public class BasicANNInitializer : MonoBehaviour {
                         }
                         isCalculating = false;
                     }
+                    if (isVisualizingANN) {
+                        for (int i = 0; i < FFANN.GetLayers().Count; i++) {
+                            for (int j = 0; j < FFANN.GetLayers()[i].GetNeurons().Count; j++) {
+                                FFANN.GetLayers()[i].GetNeurons()[j].CallNeuronVisualUpdateEvent();
+                            }
+                        }
+                    }
                 } else if (isTraining) {
                     bool isDone = FFANN.Train(epochSteps);
                     if (isDone) {
                         isTraining = false;
                         Debug.Log("Total runs (epocs x inputs): " + (epochs * inputs[0].Count));
                         Debug.Log("Time spent training: " + (DateTime.Now.TimeOfDay - start.TimeOfDay) + "min");
+                    }
+                    if (isVisualizingANN) {
+                        for (int i = 0; i < FFANN.GetLayers().Count; i++) {
+                            for (int j = 0; j < FFANN.GetLayers()[i].GetNeurons().Count; j++) {
+                                FFANN.GetLayers()[i].GetNeurons()[j].CallNeuronVisualUpdateEvent();
+                            }
+                        }
                     }
                 }
             }
@@ -157,4 +170,8 @@ public class BasicANNInitializer : MonoBehaviour {
     public bool GetIsVisualizing() { return isVisualizingANN; }
 
     public bool IsReadyForRun() { return !isWorking; }
+
+    private void OnApplicationQuit() {
+
+    }
 }
