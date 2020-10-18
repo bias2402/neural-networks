@@ -1011,6 +1011,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f088e375744dd9440bc390acc41102e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ANNCamera: {fileID: 418116935}
   INeuron: {fileID: 762255771719972391, guid: efd8590b91a7c5f49a7d95809ae6311b, type: 3}
   HNeuron: {fileID: 4583272344778024605, guid: 4b683fffc65af684b9b3e913a4817749, type: 3}
   ONeuron: {fileID: 251225709247948643, guid: d496a7d37f2211c498efd46d3b882299, type: 3}
@@ -1018,9 +1019,12 @@ MonoBehaviour:
     type: 3}
   neuronCounter: {fileID: 2269549413208611652, guid: 663f72c5a837c5c4389ba3696852f8b0,
     type: 3}
+  layerCounter: {fileID: 7639015872169082112, guid: b2472e1e01d75d54d82d662edb1c20e3,
+    type: 3}
+  hiddenNeuronCrossCounter: {fileID: 6297222308216258465, guid: 6f2410034f75d784bbc3939e0606b746,
+    type: 3}
   neuronPool: {fileID: 657157790}
   counterPool: {fileID: 359716505}
-  outputText: {fileID: 0}
 --- !u!1 &752471821
 GameObject:
   m_ObjectHideFlags: 0
@@ -2725,10 +2729,10 @@ MonoBehaviour:
     layerIndex: 0
     epochCounter: 0
     trainingIndex: 0
-  epochs: 5000
+  epochs: 500
   alpha: 0.1
-  numberOfHiddenLayers: 2
-  numberOfHiddenNeurons: 4
+  numberOfHiddenLayers: 5
+  numberOfHiddenNeurons: 6
   isUsingDiscreteActivation: 0
   triggerPoint: 0.15
   hiddenLayerActivationFunction: 0

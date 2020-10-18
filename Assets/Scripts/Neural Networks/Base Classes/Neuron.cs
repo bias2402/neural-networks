@@ -83,6 +83,6 @@ public class Neuron {
     }
 
     public void CallNeuronVisualUpdateEvent() {
-        neuronVisualUpdate();
+        neuronVisualUpdate?.Invoke();
     }
 }

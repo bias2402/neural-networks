@@ -5,33 +5,53 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ANNVisualizationHandler : MonoBehaviour {
+    [SerializeField] private Transform ANNCamera = null;
     [SerializeField] private GameObject INeuron = null;
     [SerializeField] private GameObject HNeuron = null;
     [SerializeField] private GameObject ONeuron = null;
     [SerializeField] private GameObject connection = null;
     [SerializeField] private GameObject neuronCounter = null;
+    [SerializeField] private GameObject layerCounter = null;
+    [SerializeField] private GameObject hiddenNeuronCrossCounter = null;
     [SerializeField] private Transform neuronPool = null;
     [SerializeField] private Transform counterPool = null;
-    [SerializeField] private Text outputText = null;
     private int xOffset = 180;
     private int yOffset = 80;
 
     public void CreateVisualization(int nInputNeurons, int nHiddenNeurons, int nHiddenLayers, int nOutputNeurons, List<Layer> layers) {
-        List<VisualNeuron> visualNeurons = new List<VisualNeuron>();
-        int nI = nInputNeurons > 5 ? 4 : nInputNeurons;
-        int nH = nHiddenNeurons > 5 ? 4 : nHiddenNeurons;
-        int nO = nOutputNeurons > 5 ? 4 : nOutputNeurons;
+        if (ANNCamera != null) ANNCamera.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, -425);
 
-        int maxNNeuorns = Mathf.Max(nI, nH, nO);
-        int xStart = (2 + nHiddenLayers) % 2 == 0 ? (2 + nHiddenLayers) / 2 * xOffset - xOffset / 2 : (2 + nHiddenLayers) / 2 * xOffset;
-        int yStart =  maxNNeuorns % 2 == 0 ? maxNNeuorns / 2 * yOffset - yOffset / 2 : maxNNeuorns / 2 * yOffset;
+        List<VisualNeuron> visualNeurons = new List<VisualNeuron>();
+        int numberOfInputNeurons = nInputNeurons > 5 ? 4 : nInputNeurons;
+        int numberOfHiddenNeurons = nHiddenNeurons > 5 ? 4 : nHiddenNeurons;
+        int numberOfOutputNeurons = nOutputNeurons > 5 ? 4 : nOutputNeurons;
+        int numberOfHiddenLayers = nHiddenLayers > 3 ? 2 : nHiddenLayers;
+        Debug.Log(numberOfHiddenLayers);
+
+        int maxNumberOfNeurons = Mathf.Max(numberOfInputNeurons, numberOfHiddenNeurons, numberOfOutputNeurons);
+        int xStart = (2 + numberOfHiddenLayers) % 2 == 0 ? (2 + numberOfHiddenLayers) / 2 * xOffset - xOffset / 2 : (2 + numberOfHiddenLayers) / 2 * xOffset;
+        int yStart =  maxNumberOfNeurons % 2 == 0 ? maxNumberOfNeurons / 2 * yOffset - yOffset / 2 : maxNumberOfNeurons / 2 * yOffset;
 
         for (int i = 0; i < layers.Count ; i++) {
+            if (nHiddenLayers > 3 && i == 2) {
+                GameObject lCounter = Instantiate(layerCounter, counterPool);
+                lCounter.GetComponent<CounterVisualization>().SetCounterValue(nHiddenLayers - 2);
+                lCounter.transform.localPosition = new Vector3(0, -yOffset - (maxNumberOfNeurons - numberOfHiddenNeurons) * yOffset / 2, 0);
+                lCounter = Instantiate(layerCounter, counterPool);
+                lCounter.GetComponent<CounterVisualization>().SetCounterValue(nHiddenLayers - 2);
+                lCounter.transform.localPosition = new Vector3(0, yOffset - (maxNumberOfNeurons - numberOfHiddenNeurons) * yOffset / 2, 0);
+                GameObject hNCounter = Instantiate(hiddenNeuronCrossCounter, counterPool);
+                hNCounter.transform.localPosition = Vector3.zero;
+                hNCounter.GetComponent<CounterVisualization>().SetCounterValue((nHiddenLayers - 2) * nHiddenNeurons);
+                i = layers.Count - 3;
+                continue;
+            }
+
             if (i == 0) {                                       //Input layer
                 if (nInputNeurons > 5) {
-                    for (int j = 0; j < nI; j++) {
+                    for (int j = 0; j < numberOfInputNeurons; j++) {
                         GameObject neuron = Instantiate(INeuron, neuronPool);
-                        neuron.transform.localPosition = new Vector3(-xStart, yStart - (yOffset * j) - (maxNNeuorns - nI) * yOffset / 2, 0);
+                        neuron.transform.localPosition = new Vector3(-xStart, yStart - (yOffset * j) - (maxNumberOfNeurons - numberOfInputNeurons) * yOffset / 2, 0);
                         if (neuron.transform.localPosition.y < 0) {
                             neuron.transform.localPosition += new Vector3(0, -40, 0);
                         } else {
@@ -40,14 +60,15 @@ public class ANNVisualizationHandler : MonoBehaviour {
                         VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.position, j);
                         visualNeurons.Add(vs);
                         vs.neuronVisualization.PrepareVisualNeuron(layers[i].GetNeurons()[j]);
+                        if (j == 1) j = numberOfInputNeurons - 3;
                     }
                     GameObject counter = Instantiate(neuronCounter, counterPool);
                     counter.transform.localPosition = new Vector3(-xStart, 0, 0);
                     counter.GetComponent<CounterVisualization>().SetCounterValue(nInputNeurons - 4);
                 } else {
-                    for (int j = 0; j < nI; j++) {
+                    for (int j = 0; j < numberOfInputNeurons; j++) {
                         GameObject neuron = Instantiate(INeuron, neuronPool);
-                        neuron.transform.localPosition = new Vector3(-xStart, yStart - (yOffset * j) - (maxNNeuorns - nI) * yOffset / 2, 0);
+                        neuron.transform.localPosition = new Vector3(-xStart, yStart - (yOffset * j) - (maxNumberOfNeurons - numberOfInputNeurons) * yOffset / 2, 0);
                         VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.position, j);
                         visualNeurons.Add(vs);
                         vs.neuronVisualization.PrepareVisualNeuron(layers[i].GetNeurons()[j]);
@@ -55,9 +76,9 @@ public class ANNVisualizationHandler : MonoBehaviour {
                 }
             } else if (i == layers.Count - 1) {                 //Output layer
                 if (layers[i].GetNeurons().Count > 5) {
-                    for (int j = 0; j < nO; j++) {
+                    for (int j = 0; j < numberOfOutputNeurons; j++) {
                         GameObject neuron = Instantiate(ONeuron, neuronPool);
-                        neuron.transform.localPosition = new Vector3(xStart, yStart - (yOffset * j) - (maxNNeuorns - nO) * yOffset / 2, 0);
+                        neuron.transform.localPosition = new Vector3(xStart, yStart - (yOffset * j) - (maxNumberOfNeurons - numberOfOutputNeurons) * yOffset / 2, 0);
                         if (neuron.transform.localPosition.y < 0) {
                             neuron.transform.localPosition += new Vector3(0, -40, 0);
                         } else {
@@ -66,14 +87,15 @@ public class ANNVisualizationHandler : MonoBehaviour {
                         VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.position, j);
                         visualNeurons.Add(vs);
                         vs.neuronVisualization.PrepareVisualNeuron(layers[i].GetNeurons()[j]);
+                        if (j == 1) j = numberOfOutputNeurons - 3;
                     }
                     GameObject counter = Instantiate(neuronCounter, counterPool);
                     counter.transform.localPosition = new Vector3(xStart, 0, 0);
                     counter.GetComponent<CounterVisualization>().SetCounterValue(nOutputNeurons - 4);
                 } else {
-                    for (int j = 0; j < nO; j++) {
+                    for (int j = 0; j < numberOfOutputNeurons; j++) {
                         GameObject neuron = Instantiate(ONeuron, neuronPool);
-                        neuron.transform.localPosition = new Vector3(xStart, yStart - (yOffset * j) - (maxNNeuorns - nO) * yOffset / 2, 0);
+                        neuron.transform.localPosition = new Vector3(xStart, yStart - (yOffset * j) - (maxNumberOfNeurons - numberOfOutputNeurons) * yOffset / 2, 0);
                         VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.position, j);
                         visualNeurons.Add(vs);
                         vs.neuronVisualization.PrepareVisualNeuron(layers[i].GetNeurons()[j]);
@@ -81,9 +103,9 @@ public class ANNVisualizationHandler : MonoBehaviour {
                 }
             } else {                                            //Hidden layers
                 if (nHiddenNeurons > 5) {
-                    for (int j = 0; j < nH; j++) {
+                    for (int j = 0; j < numberOfHiddenNeurons; j++) {
                         GameObject neuron = Instantiate(HNeuron, neuronPool);
-                        neuron.transform.localPosition = new Vector3(-xStart + (xOffset * (i)), yStart - (yOffset * j) - (maxNNeuorns - nH) * yOffset / 2, 0);
+                        neuron.transform.localPosition = new Vector3(-xStart + (xOffset * (i < 4 ? i : i - (nHiddenLayers - numberOfHiddenLayers))), yStart - (yOffset * j) - (maxNumberOfNeurons - numberOfHiddenNeurons) * yOffset / 2, 0);
                         if (neuron.transform.localPosition.y < 0) {
                             neuron.transform.localPosition += new Vector3(0, -40, 0);
                         } else {
@@ -92,14 +114,15 @@ public class ANNVisualizationHandler : MonoBehaviour {
                         VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.position, j);
                         visualNeurons.Add(vs);
                         vs.neuronVisualization.PrepareVisualNeuron(layers[i].GetNeurons()[j]);
+                        if (j == 1) j = numberOfHiddenNeurons - 3;
                     }
                     GameObject counter = Instantiate(neuronCounter, counterPool);
-                    counter.transform.localPosition = new Vector3(-xStart + (xOffset * (i)), 0, 0);
+                    counter.transform.localPosition = new Vector3(-xStart + (xOffset * (i < 4 ? i : i - (nHiddenLayers - numberOfHiddenLayers))), 0, 0);
                     counter.GetComponent<CounterVisualization>().SetCounterValue(nHiddenNeurons - 4);
                 } else {
-                    for (int j = 0; j < nH; j++) {
+                    for (int j = 0; j < numberOfHiddenNeurons; j++) {
                         GameObject neuron = Instantiate(HNeuron, neuronPool);
-                        neuron.transform.localPosition = new Vector3(-xStart + (xOffset * (i)), yStart - (yOffset * j) - (maxNNeuorns - nH) * yOffset / 2, 0);
+                        neuron.transform.localPosition = new Vector3(-xStart + (xOffset * i), yStart - (yOffset * j) - (maxNumberOfNeurons - numberOfHiddenNeurons) * yOffset / 2, 0);
                         VisualNeuron vs = new VisualNeuron(neuron.GetComponent<NeuronVisualization>(), i, neuron.transform.position, j);
                         visualNeurons.Add(vs);
                         vs.neuronVisualization.PrepareVisualNeuron(layers[i].GetNeurons()[j]);
@@ -118,10 +141,6 @@ public class ANNVisualizationHandler : MonoBehaviour {
                 }
             }
         }
-    }
-
-    public void SetOutputText(string text) {
-        outputText.text = text;
     }
 }
 
