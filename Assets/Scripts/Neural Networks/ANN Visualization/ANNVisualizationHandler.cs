@@ -26,7 +26,6 @@ public class ANNVisualizationHandler : MonoBehaviour {
         int numberOfHiddenNeurons = nHiddenNeurons > 5 ? 4 : nHiddenNeurons;
         int numberOfOutputNeurons = nOutputNeurons > 5 ? 4 : nOutputNeurons;
         int numberOfHiddenLayers = nHiddenLayers > 3 ? 2 : nHiddenLayers;
-        Debug.Log(numberOfHiddenLayers);
 
         int maxNumberOfNeurons = Mathf.Max(numberOfInputNeurons, numberOfHiddenNeurons, numberOfOutputNeurons);
         int xStart = (2 + numberOfHiddenLayers) % 2 == 0 ? (2 + numberOfHiddenLayers) / 2 * xOffset - xOffset / 2 : (2 + numberOfHiddenLayers) / 2 * xOffset;

@@ -2716,6 +2716,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ANNData: {fileID: 11400000, guid: 3b4a20a98cc7f3f4fb03212aedb64ef0, type: 2}
+  networkObject: {fileID: 11400000, guid: 3c9cbf4cc6d3882468240995291fafaf, type: 2}
   FFANN:
     epochs: 0
     alpha: 0
@@ -2729,13 +2730,13 @@ MonoBehaviour:
     layerIndex: 0
     epochCounter: 0
     trainingIndex: 0
-  epochs: 500
+  epochs: 5000
   alpha: 0.1
-  numberOfHiddenLayers: 5
-  numberOfHiddenNeurons: 6
+  numberOfHiddenLayers: 3
+  numberOfHiddenNeurons: 5
   isUsingDiscreteActivation: 0
   triggerPoint: 0.15
-  hiddenLayerActivationFunction: 0
+  hiddenLayerActivationFunction: 1
   outputLayerActivationFunction: 1
   epochSteps: 100
   isVisualizingANN: 1

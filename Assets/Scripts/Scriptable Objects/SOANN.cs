@@ -6,5 +6,5 @@ using System;
 [Serializable]
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/ANN", order = 1)]
 public class SOANN : ScriptableObject {
-    [SerializeReference] public FeedForwardArtificialNeuralNetwork ann;
+    [SerializeReference] public FeedForwardArtificialNeuralNetwork ann = null;
 }

@@ -16,7 +16,7 @@ public static class ActivationFunctionHandler {
         return value;
     }
 
-    static double ReLU(double value) { return value > 0 ? value : 0;  }
+    static double ReLU(double value) { return value > 0 ? value : 0; }
 
     static double Sigmoid(double value) {
         double k = System.Math.Exp(value);

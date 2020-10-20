@@ -7,6 +7,7 @@ using UnityEngine;
 public class BasicANNInitializer : MonoBehaviour {
     [Header("ANN Data")]
     [SerializeField] private SOANNData ANNData = null;
+    [SerializeField] private SOANN networkObject = null;
 
     [Header("ANN Settings")]
     [SerializeField] private FeedForwardArtificialNeuralNetwork FFANN = null;
@@ -21,6 +22,7 @@ public class BasicANNInitializer : MonoBehaviour {
     private List<int> outputNeuronsFiring = new List<int>();
     private bool isWorking = false;
     private float workingCounter = 0;
+    private bool isFFANNCreated = false;
 
     [Header("Inputs & Desired Outputs")]
     [SerializeReference] private List<List<double>> inputs = new List<List<double>>();
@@ -61,19 +63,44 @@ public class BasicANNInitializer : MonoBehaviour {
         triggerPoint = triggerPoint > 1 || triggerPoint < 0 ? 0.25f : triggerPoint;
     }
 
-    public void CreateANN() {
-        if (ANNData != null) {
-            inputs = new List<List<double>>(ANNData.CreateInputs());
-            desiredOutputs = new List<List<double>>(ANNData.CreateDesiredOutputs());
-        }
-        FFANN = new FeedForwardArtificialNeuralNetwork(epochs, alpha, numberOfHiddenLayers, numberOfHiddenNeurons, inputs, desiredOutputs,
-            hiddenLayerActivationFunction, outputLayerActivationFunction, isDelayingExecution);
+    public void SaveCurrentNetworkAsObject() {
+        if (FFANN == null) return;
+        networkObject.ann = FFANN;
+        FFANN = null;
+    }
 
-        if (isVisualizingANN) {
-            try {
-                visualizationHandler.CreateVisualization(inputs.Count, numberOfHiddenNeurons, numberOfHiddenLayers, desiredOutputs.Count, FFANN.GetLayers());
-            } catch (NullReferenceException e) {
-                Debug.LogError(e);
+    public void CreateANN() {
+        isFFANNCreated = true;
+        if (networkObject != null) {
+            FFANN = networkObject.ann;
+
+            if (isVisualizingANN) {
+                try {
+                    visualizationHandler.CreateVisualization(FFANN.GetLayers()[0].GetNeurons().Count, FFANN.GetLayers()[1].GetNeurons().Count, FFANN.GetLayers().Count - 2,
+                        FFANN.GetLayers()[FFANN.GetLayers().Count - 1].GetNeurons().Count, FFANN.GetLayers());
+                } catch (NullReferenceException e) {
+                    Debug.LogError(e);
+                }
+                for (int i = 0; i < FFANN.GetLayers().Count; i++) {
+                    for (int j = 0; j < FFANN.GetLayers()[i].GetNeurons().Count; j++) {
+                        FFANN.GetLayers()[i].GetNeurons()[j].CallNeuronVisualUpdateEvent();
+                    }
+                }
+            }
+        } else {
+            if (ANNData != null) {
+                inputs = new List<List<double>>(ANNData.CreateInputs());
+                desiredOutputs = new List<List<double>>(ANNData.CreateDesiredOutputs());
+            }
+            FFANN = new FeedForwardArtificialNeuralNetwork(epochs, alpha, numberOfHiddenLayers, numberOfHiddenNeurons, inputs, desiredOutputs,
+                hiddenLayerActivationFunction, outputLayerActivationFunction, isDelayingExecution);
+
+            if (isVisualizingANN) {
+                try {
+                    visualizationHandler.CreateVisualization(inputs.Count, numberOfHiddenNeurons, numberOfHiddenLayers, desiredOutputs.Count, FFANN.GetLayers());
+                } catch (NullReferenceException e) {
+                    Debug.LogError(e);
+                }
             }
         }
     }
@@ -170,6 +197,8 @@ public class BasicANNInitializer : MonoBehaviour {
     public bool GetIsVisualizing() { return isVisualizingANN; }
 
     public bool IsReadyForRun() { return !isWorking; }
+
+    public bool IsFFANNCreated() { return isFFANNCreated; }
 
     private void OnApplicationQuit() {
 

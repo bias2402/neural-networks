@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
-using System.Threading;
 
 public enum ActivationFunctions { ReLU, Sigmoid, TanH }
 [Serializable]
@@ -21,8 +19,6 @@ public class FeedForwardArtificialNeuralNetwork {
     [SerializeField] private int layerIndex = 0;
     [SerializeField] private int epochCounter = 0;
     [SerializeField] private int trainingIndex = 0;
-    public Thread mainThread { get; internal set; } = null;
-    private bool isUsingMultiThreading = false;
 
     //Get & Set methods
     #region
@@ -212,7 +208,7 @@ public class FeedForwardArtificialNeuralNetwork {
 
     void Backpropagation() {
         int outputLayer = layers.Count - 1;
-        int hiddenLayers = layers.Count > 2 ? layers.Count - 2 : 0;
+        int numberOfHiddenLayers = layers.Count > 2 ? layers.Count - 2 : 0;
         //Output layer
         for (int i = 0; i < layers[outputLayer].GetNeurons().Count; i++) {   //Iterate the neurons in the output layer
             //Calculate the error for the neuron by subtracting the actual output from the desired output  of this output neuron
@@ -228,16 +224,16 @@ public class FeedForwardArtificialNeuralNetwork {
             layers[outputLayer].GetNeurons()[i].SetBias(alpha * -1 * layers[outputLayer].GetNeurons()[i].GetErrorGradient());
         }
         //Hidden layer
-        for (int i = hiddenLayers; i > 1; i--) {    //Iterate the hidden layers
-            for (int j = 0; j < layers[i].GetNeurons().Count; j++) {     //Iterate the neurons
+        for (int i = numberOfHiddenLayers; i > 1; i--) {    //Iterate the hidden layers
+            for (int j = 0; j < layers[i].GetNeurons().Count; j++) {     //Iterate the layer's neurons
                 //Calculate the errorGradientSum for the previous layer
                 double errorGradientSum = 0;
                 for (int k = 0; k < layers[i + 1].GetNeurons().Count; k++) {
                     errorGradientSum += layers[i + 1].GetNeurons()[k].GetErrorGradient() * layers[i + 1].GetNeurons()[k].GetWeights()[j];
                 }
                 //Calculate the errorGradient for the neuron (used for the errorGradientSum in the hidden layer to follow)
-                layers[i].GetNeurons()[j].SetErrorGradient(ActivationFunctionHandler.TriggerDerativeFunction(layers[outputLayer].GetNeurons()[i].GetActivationFunction(),
-                    layers[outputLayer].GetNeurons()[i].GetOutput()) * errorGradientSum);
+                layers[i].GetNeurons()[j].SetErrorGradient(ActivationFunctionHandler.TriggerDerativeFunction(layers[i].GetNeurons()[j].GetActivationFunction(),
+                    layers[i].GetNeurons()[j].GetOutput()) * errorGradientSum);
                 //Update the neuron's weights
                 for (int k = 0; k < layers[i].GetNeurons()[j].GetWeights().Count; k++) {
                     layers[i].GetNeurons()[j].GetWeights()[k] += alpha * layers[i].GetNeurons()[j].GetInputs()[k] * layers[i].GetNeurons()[j].GetErrorGradient();

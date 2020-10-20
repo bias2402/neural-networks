@@ -14,6 +14,7 @@ public class AgentExampleControls : MonoBehaviour {
     private double turn = 0;
 
     void Update() {
+        if (Input.GetKeyDown(KeyCode.S)) ANNInitializer.SaveCurrentNetworkAsObject();
         if (!isAIAgent) {
             isRecievingInput = false;
             forward = 0;
@@ -37,9 +38,10 @@ public class AgentExampleControls : MonoBehaviour {
                 isRecievingInput = true;
             }
 
-            if (Input.GetKeyDown(KeyCode.Space)) {
+            if (Input.GetKeyDown(KeyCode.Space) && !ANNInitializer.IsFFANNCreated()) {
                 if (ANNInitializer.GetIsVisualizing()) ANNView.SetActive(true);
                 ANNInitializer.CreateANN();
+            } else if (Input.GetKeyDown(KeyCode.Space) && ANNInitializer.IsFFANNCreated()) {
                 ANNInitializer.Run(true);
             }
 

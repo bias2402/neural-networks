@@ -1,0 +1,724 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1150c012facfeb046b0e20811558c60a, type: 3}
+  m_Name: Neural Network
+  m_EditorClassIdentifier: 
+  ann:
+    id: 0
+  references:
+    version: 1
+    00000000:
+      type: {class: FeedForwardArtificialNeuralNetwork, ns: , asm: Assembly-CSharp}
+      data:
+        epochs: 500
+        alpha: 0.1
+        numberOfHiddenLayers: 5
+        numberOfHiddenNeurons: 6
+        outputs: []
+        layers:
+        - neurons:
+          - isInputNeuron: 1
+            inputValue: 0
+            bias: 0
+            weights: []
+            inputs: []
+            output: 0
+            errorGradient: 0
+            name: Input 0,0
+            activationFunction: 1
+          - isInputNeuron: 1
+            inputValue: 0
+            bias: 0
+            weights: []
+            inputs: []
+            output: 0
+            errorGradient: 0
+            name: Input 0,1
+            activationFunction: 1
+          - isInputNeuron: 1
+            inputValue: 0
+            bias: 0
+            weights: []
+            inputs: []
+            output: 0
+            errorGradient: 0
+            name: Input 0,2
+            activationFunction: 1
+        - neurons:
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: 0.8114421367645264
+            weights:
+            - 0.36110565066337585
+            - -0.7911505699157715
+            - 0.8815224170684814
+            inputs:
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 1,0
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: 0.14490902423858643
+            weights:
+            - -0.8556079864501953
+            - -0.04102480411529541
+            - -0.1339188814163208
+            inputs:
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 1,1
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: 0.3331281840801239
+            weights:
+            - 0.45856496691703796
+            - -0.8983492851257324
+            - -0.20591747760772705
+            inputs:
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 1,2
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.7805235385894775
+            weights:
+            - 0.2544538676738739
+            - 0.2707345187664032
+            - -0.22875630855560303
+            inputs:
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 1,3
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.45116913318634033
+            weights:
+            - 0.2457181215286255
+            - 0.9472208023071289
+            - -0.72043776512146
+            inputs:
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 1,4
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: 0.47940441966056824
+            weights:
+            - -0.3070024251937866
+            - -0.003325343132019043
+            - 0.23083531856536865
+            inputs:
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 1,5
+            activationFunction: 0
+        - neurons:
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.23907697200775146
+            weights:
+            - 0.9378738403320312
+            - -0.15476739406585693
+            - -0.06667602062225342
+            - 0.13397228717803955
+            - -0.9117395877838135
+            - -0.5997405052185059
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 2,0
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.8674581050872803
+            weights:
+            - 0.5495655536651611
+            - -0.9176793098449707
+            - -0.36088597774505615
+            - 0.48840686678886414
+            - -0.5266318321228027
+            - -0.5584821701049805
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 2,1
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.611459493637085
+            weights:
+            - 0.43996474146842957
+            - 0.4839584529399872
+            - -0.013929963111877441
+            - -0.8130090236663818
+            - 0.9110791683197021
+            - 0.324921578168869
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 2,2
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: 0.7502691745758057
+            weights:
+            - 0.6030788421630859
+            - -0.38837873935699463
+            - -0.4771541357040405
+            - -0.5082128047943115
+            - 0.101326584815979
+            - 0.7604515552520752
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 2,3
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: 0.6358675956726074
+            weights:
+            - -0.3343144655227661
+            - -0.3301936388015747
+            - -0.4184993505477905
+            - -0.24057519435882568
+            - -0.4323352575302124
+            - -0.22610461711883545
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 2,4
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.11270701885223389
+            weights:
+            - -0.7828998565673828
+            - -0.6270627975463867
+            - 0.5210893154144287
+            - -0.16884315013885498
+            - 0.11970555782318115
+            - -0.2082432508468628
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 2,5
+            activationFunction: 0
+        - neurons:
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: 0.054171204566955566
+            weights:
+            - -0.4524744749069214
+            - -0.08340179920196533
+            - 0.1012810468673706
+            - 0.06612813472747803
+            - -0.6864900588989258
+            - -0.5378296375274658
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 3,0
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.1422063112258911
+            weights:
+            - 0.7539188861846924
+            - -0.5214231014251709
+            - 0.7362773418426514
+            - 0.14457929134368896
+            - 0.8253602981567383
+            - -0.37651383876800537
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 3,1
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.18379104137420654
+            weights:
+            - 0.6939213275909424
+            - -0.08190739154815674
+            - 0.23714888095855713
+            - 0.7105076313018799
+            - 0.7119913101196289
+            - 0.512711763381958
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 3,2
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.37716662883758545
+            weights:
+            - -0.8012773990631104
+            - 0.12989890575408936
+            - 0.06736981868743896
+            - -0.20602548122406006
+            - 0.7448530197143555
+            - 0.2296205759048462
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 3,3
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.7260069847106934
+            weights:
+            - 0.06458032131195068
+            - -0.6490702629089355
+            - 0.18476474285125732
+            - -0.7913851737976074
+            - -0.7559750080108643
+            - -0.7370963096618652
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 3,4
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.8722050189971924
+            weights:
+            - -0.31686246395111084
+            - 0.837130069732666
+            - -0.9757630825042725
+            - -0.6714401245117188
+            - 0.8432607650756836
+            - 0.051975369453430176
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 3,5
+            activationFunction: 0
+        - neurons:
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.33679115772247314
+            weights:
+            - 0.2629944980144501
+            - 0.07264697551727295
+            - -0.2554541826248169
+            - 0.6316282749176025
+            - 0.5230944156646729
+            - -0.6282210350036621
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 4,0
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: 0.5452544689178467
+            weights:
+            - 0.04314744472503662
+            - 0.665579080581665
+            - -0.8693497180938721
+            - -0.3210214376449585
+            - -0.10140812397003174
+            - -0.8364698886871338
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 4,1
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: 0.06040346622467041
+            weights:
+            - -0.5434725284576416
+            - -0.14475476741790771
+            - -0.986370325088501
+            - 0.0010231733322143555
+            - -0.251057505607605
+            - 0.7303516864776611
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 4,2
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.1722625494003296
+            weights:
+            - -0.08244407176971436
+            - -0.6185116767883301
+            - 0.5225832462310791
+            - -0.7837667465209961
+            - 0.2799472510814667
+            - 0.41657230257987976
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 4,3
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: 0.08018124103546143
+            weights:
+            - 0.5065035820007324
+            - -0.1762000322341919
+            - 0.7098174095153809
+            - 0.9464147090911865
+            - -0.41937029361724854
+            - 0.05307972431182861
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 4,4
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: 0.4630756080150604
+            weights:
+            - 0.9012126922607422
+            - 0.9477901458740234
+            - 0.31100913882255554
+            - -0.0055114030838012695
+            - 0.6989331245422363
+            - 0.3360893428325653
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 4,5
+            activationFunction: 0
+        - neurons:
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.999323844909668
+            weights:
+            - 0.5489726066589355
+            - 0.964829683303833
+            - 0.4300658404827118
+            - 0.8352322578430176
+            - -0.588817834854126
+            - 0.42678090929985046
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 5,0
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.45843684673309326
+            weights:
+            - 0.6018502712249756
+            - -0.7555632591247559
+            - 0.6351845264434814
+            - 0.7289178371429443
+            - 0.9648892879486084
+            - -0.12458980083465576
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 5,1
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.7875971794128418
+            weights:
+            - 0.747056245803833
+            - 0.5719606876373291
+            - 0.3800215423107147
+            - 0.5480852127075195
+            - -0.26713860034942627
+            - 0.6133983135223389
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 5,2
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.7589001655578613
+            weights:
+            - 0.9377291202545166
+            - 0.3497287929058075
+            - -0.06996095180511475
+            - -0.44576966762542725
+            - -0.2103952169418335
+            - 0.8446671962738037
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 5,3
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.6873035430908203
+            weights:
+            - -0.4122105836868286
+            - 0.9206235408782959
+            - 0.6225204467773438
+            - -0.5298540592193604
+            - 0.6165950298309326
+            - -0.09619033336639404
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 5,4
+            activationFunction: 0
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: 0.5264675617218018
+            weights:
+            - 0.8591916561126709
+            - 0.8917913436889648
+            - 0.2581329047679901
+            - -0.32874882221221924
+            - -0.36772358417510986
+            - 0.9971022605895996
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Hidden 5,5
+            activationFunction: 0
+        - neurons:
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.29983532428741455
+            weights:
+            - 0.11868464946746826
+            - -0.018222689628601074
+            - -0.40087568759918213
+            - -0.48961102962493896
+            - 0.11824476718902588
+            - -0.6832485198974609
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Output 6,0
+            activationFunction: 1
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.7021751403808594
+            weights:
+            - 0.5852417945861816
+            - 0.7836918830871582
+            - 0.1415494680404663
+            - 0.9983456134796143
+            - 0.3052468001842499
+            - 0.6956992149353027
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Output 6,1
+            activationFunction: 1
+          - isInputNeuron: 0
+            inputValue: 0
+            bias: -0.8419349193572998
+            weights:
+            - 0.6655111312866211
+            - 0.10628736019134521
+            - 0.4323076903820038
+            - -0.5356957912445068
+            - 0.3694100081920624
+            - -0.19405925273895264
+            inputs:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            output: 0
+            errorGradient: 0
+            name: Output 6,2
+            activationFunction: 1
+        hiddenLayerActivationFunction: 0
+        outputLayerActivationFunction: 1
+        isDelaying: 0
+        layerIndex: 0
+        epochCounter: 0
+        trainingIndex: 0
